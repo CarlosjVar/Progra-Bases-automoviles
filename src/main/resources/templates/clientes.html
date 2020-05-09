@@ -13,7 +13,33 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h2>Hola?</h2>
+    <h2><i class="fa fa-users"></i> Clientes</h2>
+    <hr>
+    <div class="row">
+        <div class="col-md-9">
+            <h4>Personas</h4>
+            <table class="table table-striped">
+                <thead>
+                    <th>Cedula</th>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Detalles</th>
+                </thead>
+                <tbody>
+                    <tr th:each="persona: ${personas}">
+                        <td th:text="${persona.getCedula()}"></td>
+                        <td th:text="${persona.getNombre()}"></td>
+                        <td th:text="${persona.getEstado()}"></td>
+                        <td><a href="#" class="btn btn-dark btn-block">Detalles</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-3">
+            <a href="#" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar persona</a>
+            <a href="#" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar organizacion</a>
+        </div>
+    </div>
 </section>
 </body>
 </html>
