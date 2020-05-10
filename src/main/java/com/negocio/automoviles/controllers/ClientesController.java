@@ -1,6 +1,7 @@
 package com.negocio.automoviles.controllers;
 
 import com.negocio.automoviles.database.DatabaseSource;
+import com.negocio.automoviles.jdbc.ClientJDBC;
 import com.negocio.automoviles.jdbc.PersonaJDBC;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,8 +44,12 @@ public class ClientesController {
     @RequestMapping(value = "/clientes/personas/add", method = RequestMethod.POST)
     public String procesarAgregarPersona(@ModelAttribute Persona persona, RedirectAttributes redirectAttributes) {
         ArrayList<String> errores = new ArrayList<String>();
+        // Crear acceso a las personas
+        PersonaJDBC personaJDBC = new PersonaJDBC();
+        personaJDBC.setDataSource(DatabaseSource.getDataSource());
         // Revisar cedula
-        if (persona.getCedula() > 999999999 || persona.getCedula() < 100000000) {
+        if (persona.getCedula() > 999999999 || persona.getCedula() < 100000000
+                || personaJDBC.existeCedula(persona.getCedula())) {
             errores.add("Cedula invalida");
         }
         // Revisar nombre
@@ -65,7 +70,9 @@ public class ClientesController {
             redirectAttributes.addFlashAttribute("persona", persona);
             return "redirect:/clientes/personas/add";
         }
-        // TODO: Procesar la persona
+        // Insertar en la tabla de clientes
+        personaJDBC.agregarPersona(persona);
+
         redirectAttributes.addFlashAttribute("success_msg", "Persona agregada");
         return "redirect:/clientes";
     }

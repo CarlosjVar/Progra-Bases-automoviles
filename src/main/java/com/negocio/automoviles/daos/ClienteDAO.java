@@ -5,9 +5,8 @@ import java.util.List;
 
 import com.negocio.automoviles.models.Persona;
 
-public interface PersonaDAO {
+public interface ClienteDAO {
     public void setDataSource(DataSource ds);
-    public List<Persona> getPersonas();
-    public boolean existeCedula(int cedula);
-    public void agregarPersona(Persona persona);
+    public int agregarCliente(String nombre, String direccion, String ciudad, String estado);
 }
+
