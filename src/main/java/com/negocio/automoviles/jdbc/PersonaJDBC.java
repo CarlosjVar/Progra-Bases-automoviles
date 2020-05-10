@@ -61,4 +61,12 @@ public class PersonaJDBC implements PersonaDAO {
         String query = "INSERT INTO personas (cedula, surrogate_key) VALUES (?, ?)";
         jdbcTemplateObject.update(query, persona.getCedula(), surrogateKey);
     }
+
+    @Override
+    public Persona getPersona(int cedula) {
+        String query = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
+                "FROM clientes INNER JOIN personas ON clientes.id = personas.surrogate_key WHERE cedula = ?";
+        Persona persona = jdbcTemplateObject.queryForObject(query, new Object[]{cedula}, new PersonaMapper());
+        return persona;
+    }
 }

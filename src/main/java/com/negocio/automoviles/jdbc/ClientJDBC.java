@@ -44,4 +44,10 @@ public class ClientJDBC implements ClienteDAO {
         Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
         return newId.intValue();
     }
+
+    @Override
+    public void modificarCliente(int id, String nombre, String direccion, String ciudad, String estado) {
+        String query = "UPDATE clientes SET nombre = ?, direccion = ?, ciudad = ?, estado = ? WHERE id = ?";
+        jdbcTemplateObject.update(query, nombre, direccion, ciudad, estado, id);
+    }
 }

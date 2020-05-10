@@ -8,5 +8,6 @@ import com.negocio.automoviles.models.Persona;
 public interface ClienteDAO {
     public void setDataSource(DataSource ds);
     public int agregarCliente(String nombre, String direccion, String ciudad, String estado);
+    public void modificarCliente(int id, String nombre, String direccion, String ciudad, String estado);
 }
 
