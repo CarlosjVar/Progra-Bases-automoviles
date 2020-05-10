@@ -3,14 +3,17 @@ package com.negocio.automoviles.controllers;
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.ClientJDBC;
 import com.negocio.automoviles.jdbc.PersonaJDBC;
+import com.negocio.automoviles.validators.PersonaValidator;
+import com.negocio.automoviles.models.Persona;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import com.negocio.automoviles.models.Persona;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,11 @@ import java.util.List;
 @Controller
 public class ClientesController {
 
-    // Pagina principal de clientes
+    /**
+     * Pagina principal de clientes
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/clientes", method = RequestMethod.GET)
     public String clientes(Model model) {
         PersonaJDBC personaJDBC = new PersonaJDBC();
@@ -31,7 +38,11 @@ public class ClientesController {
         return "clientes";
     }
 
-    // Formulario para agregar clientes
+    /**
+     * Cargar formulario para agregar clientes
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/clientes/personas/add", method = RequestMethod.GET)
     public String agregarPersona(Model model) {
         if (!model.containsAttribute("persona")) {
@@ -40,29 +51,15 @@ public class ClientesController {
         return "addpersona";
     }
 
+    /**
+     * Procesar el cliente nuevo
+     * @param persona
+     * @param redirectAttributes
+     * @return
+     */
     @RequestMapping(value = "/clientes/personas/add", method = RequestMethod.POST)
     public String procesarAgregarPersona(@ModelAttribute Persona persona, RedirectAttributes redirectAttributes) {
-        ArrayList<String> errores = new ArrayList<String>();
-        // Crear acceso a las personas
-        PersonaJDBC personaJDBC = new PersonaJDBC();
-        personaJDBC.setDataSource(DatabaseSource.getDataSource());
-        // Revisar cedula
-        if (persona.getCedula() > 999999999 || persona.getCedula() < 100000000
-                || personaJDBC.existeCedula(persona.getCedula())) {
-            errores.add("Cedula invalida");
-        }
-        // Revisar nombre
-        if (persona.getNombre().equals("") || persona.getNombre().length() > 30) {
-            errores.add("Nombre invalido");
-        }
-        // Revisar direccion
-        if (persona.getDireccion().equals("") || persona.getDireccion().length() > 30) {
-            errores.add("Direccion invalida");
-        }
-        // Revisar ciudad
-        if (persona.getCiudad().equals("") || persona.getCiudad().length() > 15) {
-            errores.add("Ciudad invalida");
-        }
+        ArrayList<String> errores = PersonaValidator.validarPersona(persona, true);
         // Hay errores
         if (errores.size() != 0) {
             redirectAttributes.addFlashAttribute("errors", errores);
@@ -70,11 +67,19 @@ public class ClientesController {
             return "redirect:/clientes/personas/add";
         }
         // Insertar en la tabla de clientes
+        PersonaJDBC personaJDBC = new PersonaJDBC();
+        personaJDBC.setDataSource(DatabaseSource.getDataSource());
         personaJDBC.agregarPersona(persona);
         redirectAttributes.addFlashAttribute("success_msg", "Persona agregada");
         return "redirect:/clientes";
     }
 
+    /**
+     * Cargar los detalles de una sola persona
+     * @param cedula
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/clientes/personas/{cedula}", method = RequestMethod.GET)
     public String getPersona(@PathVariable(value = "cedula") int cedula, Model model) {
         PersonaJDBC personaJDBC = new PersonaJDBC();
@@ -84,6 +89,12 @@ public class ClientesController {
         return "detallespersona";
     }
 
+    /**
+     * Cargar formulario para modificar una persona
+     * @param cedula
+     * @param model
+     * @return
+     */
     @RequestMapping(value="/clientes/personas/{cedula}/modificar", method = RequestMethod.GET)
     public String modificarPersona(@PathVariable(value = "cedula") int cedula, Model model) {
         // Obtener persona
@@ -96,18 +107,16 @@ public class ClientesController {
         return "modificarpersona";
     }
 
+    /**
+     * Procesar la modificacion de una persona
+     * @param persona
+     * @param cedula
+     * @param redirectAttributes
+     * @return
+     */
     @RequestMapping(value="/clientes/personas/{cedula}/modificar", method = RequestMethod.POST)
     public String procesarModificarPersona(@ModelAttribute Persona persona, @PathVariable(value = "cedula") int cedula, RedirectAttributes redirectAttributes) {
-        ArrayList<String> errores = new ArrayList<String>();
-        if (persona.getNombre().equals("") || persona.getNombre().length() > 30) {
-            errores.add("Nombre invalido");
-        }
-        if (persona.getDireccion().equals("") || persona.getDireccion().length() > 30) {
-            errores.add("Direccion invalida");
-        }
-        if (persona.getCiudad().equals("") || persona.getCiudad().length() > 15) {
-            errores.add("Ciudad invalida");
-        }
+        ArrayList<String> errores = PersonaValidator.validarPersona(persona, false);
         // Hay errores
         if (errores.size() != 0) {
             redirectAttributes.addFlashAttribute("errors", errores);
