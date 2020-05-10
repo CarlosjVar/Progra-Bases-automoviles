@@ -14,9 +14,9 @@
     <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Negocio de autos</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
     <div class="container">
-        <a href="/" class="navbar-brand">Negocio de partes</a>
+        <a href="/" class="navbar-brand"><i class="fa fa-cogs"></i> Negocio de partes</a>
         <!--    Boton para responsive navbar    -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -29,12 +29,16 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <!-- Links a la derecha de la barra de navegacion -->
+                <li class="nav-item">
+                    <a th:href="@{~/clientes}" class="nav-link"><i class="fa fa-users"></i> Clientes</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container">
+    <div class="alert alert-danger" th:each="error : ${errors}" th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success_msg}" th:text="${success_msg}"></div>
     <!--  Esta seccion define el contenido dinamico de las plantillas  -->
     <section layout:fragment="content">
 
