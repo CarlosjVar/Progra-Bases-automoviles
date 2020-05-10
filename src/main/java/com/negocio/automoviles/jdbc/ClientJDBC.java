@@ -45,9 +45,27 @@ public class ClientJDBC implements ClienteDAO {
         return newId.intValue();
     }
 
+    /**
+     * Modifica la informacion de un cliente
+     * @param id
+     * @param nombre
+     * @param direccion
+     * @param ciudad
+     * @param estado
+     */
     @Override
     public void modificarCliente(int id, String nombre, String direccion, String ciudad, String estado) {
         String query = "UPDATE clientes SET nombre = ?, direccion = ?, ciudad = ?, estado = ? WHERE id = ?";
         jdbcTemplateObject.update(query, nombre, direccion, ciudad, estado, id);
+    }
+
+    /**
+     * Suspende un cliente
+     * @param id
+     */
+    @Override
+    public void suspenderCliente(int id) {
+        String query = "UPDATE clientes SET estado = 'SUSPENDIDO' WHERE id = ?";
+        jdbcTemplateObject.update(query, id);
     }
 }

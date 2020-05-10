@@ -20,11 +20,16 @@
                 <li class="list-group-item"><strong>Cedula: </strong> <span th:text="${persona.getCedula()}"></span></li>
                 <li class="list-group-item"><strong>Direccion: </strong> <span th:text="${persona.getCiudad()}"></span></li>
                 <li class="list-group-item"><strong>Ciudad: </strong> <span th:text="${persona.getDireccion()}"></span></li>
+                <li class="list-group-item"><strong>Estado: </strong> <span th:classappend="${persona.getEstado() == 'SUSPENDIDO'} ? 'text-danger' : 'text-success'"
+                        th:text="${persona.getEstado()}"></span></li>
             </ul>
         </div>
         <div class="col-md-3">
             <a th:href="'/clientes/personas/' + ${persona.getCedula()} + '/modificar'" class="btn btn-warning btn-block"><i class="fa fa-pencil"></i> Modificar</a>
-            <!-- TODO: Crear boton para suspender un cliente -->
+            <form action="#" th:action="@{/clientes/suspender}" method="post" th:object="${persona}" th:if="${persona.getEstado()} == 'ACTIVO' or ${persona.getEstado()} == 'INACTIVO'">
+                <input type="hidden" th:field="*{id}" >
+                <input type="submit" value="Suspender" class="mt-3 btn btn-danger btn-block">
+            </form>
         </div>
     </div>
 </section>

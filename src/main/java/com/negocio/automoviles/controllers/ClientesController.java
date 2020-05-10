@@ -3,6 +3,7 @@ package com.negocio.automoviles.controllers;
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.ClientJDBC;
 import com.negocio.automoviles.jdbc.PersonaJDBC;
+import com.negocio.automoviles.models.Cliente;
 import com.negocio.automoviles.validators.PersonaValidator;
 import com.negocio.automoviles.models.Persona;
 
@@ -134,5 +135,13 @@ public class ClientesController {
         clientJDBC.modificarCliente(idPersona, persona.getNombre(), persona.getDireccion(), persona.getCiudad(), estadoPersona);
         redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
         return "redirect:/clientes/personas/" + persona.getCedula() + "?id=" + persona.getId();
+    }
+
+    @RequestMapping(value = "/clientes/suspender", method = RequestMethod.POST)
+    public String suspenderCliente(@ModelAttribute Persona persona, RedirectAttributes redirectAttributes) {
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        clientJDBC.suspenderCliente(persona.getId());
+        return "redirect:/clientes";
     }
 }

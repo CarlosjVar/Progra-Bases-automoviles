@@ -19,7 +19,7 @@
         <div class="col-md-9">
             <h4>Personas</h4>
             <table class="table table-striped">
-                <thead>
+                <thead class="thead-dark">
                     <th>Cedula</th>
                     <th>Nombre</th>
                     <th>Estado</th>
@@ -29,7 +29,9 @@
                     <tr th:each="persona: ${personas}">
                         <td th:text="${persona.getCedula()}"></td>
                         <td th:text="${persona.getNombre()}"></td>
-                        <td th:text="${persona.getEstado()}"></td>
+                        <td
+                                th:classappend="${persona.getEstado() == 'SUSPENDIDO'} ? 'text-danger' : 'text-success'"
+                                th:text="${persona.getEstado()}"></td>
                         <td><a th:href="'/clientes/personas/' + ${persona.getCedula()}" class="btn btn-dark btn-block">Detalles</a></td>
                     </tr>
                 </tbody>
