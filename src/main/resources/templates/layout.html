@@ -37,6 +37,8 @@
     </div>
 </nav>
 <div class="container">
+    <div class="alert alert-danger" th:each="error : ${errors}" th:text="${error}"></div>
+    <div class="alert alert-success" th:if="${success_msg}" th:text="${success_msg}"></div>
     <!--  Esta seccion define el contenido dinamico de las plantillas  -->
     <section layout:fragment="content">
 
