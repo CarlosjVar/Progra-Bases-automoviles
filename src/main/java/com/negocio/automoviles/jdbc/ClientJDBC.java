@@ -68,4 +68,6 @@ public class ClientJDBC implements ClienteDAO {
         String query = "UPDATE clientes SET estado = 'SUSPENDIDO' WHERE id = ?";
         jdbcTemplateObject.update(query, id);
     }
+
+
 }

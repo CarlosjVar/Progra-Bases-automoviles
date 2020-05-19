@@ -36,10 +36,29 @@
                     </tr>
                 </tbody>
             </table>
+            <h4>Organizaciones</h4>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                <th>Cedula</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Detalles</th>
+                </thead>
+                <tbody>
+                <tr th:each="organizacion: ${organizaciones}">
+                    <td th:text="${organizacion.getCedula()}"></td>
+                    <td th:text="${organizacion.getNombre()}"></td>
+                    <td
+                            th:classappend="${organizacion.getEstado() == 'SUSPENDIDO'} ? 'text-danger' : 'text-success'"
+                            th:text="${organizacion.getEstado()}"></td>
+                    <td><a th:href="'/clientes/organizaciones/' + ${organizacion.getCedula()}" class="btn btn-dark btn-block">Detalles</a></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-md-3">
             <a th:href="@{/clientes/personas/add}" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar persona</a>
-            <a href="#" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar organizacion</a>
+            <a th:href="@{/clientes/organizaciones/add}" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar organizacion</a>
         </div>
     </div>
 </section>

@@ -30,7 +30,7 @@ public class PersonaJDBC implements PersonaDAO {
     @Override
     public List<Persona> getPersonas() {
         String query = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-                "FROM clientes INNER JOIN personas ON clientes.id = personas.surrogate_key";
+                "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente";
         List<Persona> personas = jdbcTemplateObject.query(query, new PersonaMapper());
         return personas;
     }
@@ -43,7 +43,7 @@ public class PersonaJDBC implements PersonaDAO {
     @Override
     public boolean existeCedula(int cedula) {
         String query = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-                "FROM clientes INNER JOIN personas ON clientes.id = personas.surrogate_key WHERE cedula = ?";
+                "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente WHERE cedula = ?";
         List<Persona> personas = jdbcTemplateObject.query(query, new Object[]{cedula}, new PersonaMapper());
         return personas.size() > 0;
     }
@@ -58,14 +58,14 @@ public class PersonaJDBC implements PersonaDAO {
         clientJDBC.setDataSource(this.dataSource);
         // Insertar en tabla de clientes
         int surrogateKey = clientJDBC.agregarCliente(persona.getNombre(), persona.getDireccion(), persona.getCiudad(), "ACTIVO");
-        String query = "INSERT INTO personas (cedula, surrogate_key) VALUES (?, ?)";
+        String query = "INSERT INTO personas (cedula, id_cliente) VALUES (?, ?)";
         jdbcTemplateObject.update(query, persona.getCedula(), surrogateKey);
     }
 
     @Override
     public Persona getPersona(int cedula) {
         String query = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-                "FROM clientes INNER JOIN personas ON clientes.id = personas.surrogate_key WHERE cedula = ?";
+                "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente WHERE cedula = ?";
         Persona persona = jdbcTemplateObject.queryForObject(query, new Object[]{cedula}, new PersonaMapper());
         return persona;
     }

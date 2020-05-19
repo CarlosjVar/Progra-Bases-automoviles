@@ -2,8 +2,11 @@ package com.negocio.automoviles.controllers;
 
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.ClientJDBC;
+import com.negocio.automoviles.jdbc.OrganizacionJDBC;
 import com.negocio.automoviles.jdbc.PersonaJDBC;
 import com.negocio.automoviles.models.Cliente;
+import com.negocio.automoviles.models.Organizacion;
+import com.negocio.automoviles.validators.OrganizacionValidator;
 import com.negocio.automoviles.validators.PersonaValidator;
 import com.negocio.automoviles.models.Persona;
 
@@ -35,7 +38,11 @@ public class ClientesController {
         personaJDBC.setDataSource(DatabaseSource.getDataSource());
         List<Persona> personas = personaJDBC.getPersonas();
         model.addAttribute("personas", personas);
-        // TODO: Obtener Organizaciones
+
+        OrganizacionJDBC organizacionJDBC= new OrganizacionJDBC();
+        organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
+        List<Organizacion> organizaciones = organizacionJDBC.getOrganizaciones();
+        model.addAttribute("organizaciones",organizaciones);
         return "clientes";
     }
 
@@ -122,6 +129,7 @@ public class ClientesController {
         if (errores.size() != 0) {
             redirectAttributes.addFlashAttribute("errors", errores);
             redirectAttributes.addFlashAttribute("persona", persona);
+            System.out.println(errores);
             return "redirect:/clientes/personas/" + persona.getCedula() + "/modificar";
         }
         // Obtener id
@@ -137,11 +145,118 @@ public class ClientesController {
         return "redirect:/clientes/personas/" + persona.getCedula() + "?id=" + persona.getId();
     }
 
+    /**
+     * Asigna el estado de un cliente como suspendido
+     * @param persona
+     * @param redirectAttributes
+     * @return
+     */
     @RequestMapping(value = "/clientes/suspender", method = RequestMethod.POST)
     public String suspenderCliente(@ModelAttribute Persona persona, RedirectAttributes redirectAttributes) {
         ClientJDBC clientJDBC = new ClientJDBC();
         clientJDBC.setDataSource(DatabaseSource.getDataSource());
         clientJDBC.suspenderCliente(persona.getId());
+        return "redirect:/clientes";
+    }
+
+    /**
+     * Carga formulario para agregar nuevas organizaciones
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "clientes/organizaciones/add", method = RequestMethod.GET)
+    public String addOrganizacion(Model model)
+    {
+        if (!model.containsAttribute("organizacion")) {
+            model.addAttribute("organizacion", new Organizacion());
+        }
+        return "addorganizacion";
+    }
+    @RequestMapping(value = "clientes/organizaciones/add", method = RequestMethod.POST)
+    public String procesarAddOrganizacion(@ModelAttribute Organizacion organizacion,RedirectAttributes redirectAttributes)
+    {
+        ArrayList<String> errores = OrganizacionValidator.validarOrganizacion(organizacion, true);
+        // Hay errores
+        if (errores.size() != 0) {
+            redirectAttributes.addFlashAttribute("errors", errores);
+            redirectAttributes.addFlashAttribute("organizacion", organizacion);
+            return "redirect:/clientes/organizaciones/add";
+        }
+        // Insertar en la tabla de clientes
+        OrganizacionJDBC organizacionJDBC = new OrganizacionJDBC();
+        organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
+        organizacionJDBC.agregarOrganizacion(organizacion);
+        redirectAttributes.addFlashAttribute("success_msg", "Persona agregada");
+        return "redirect:/clientes";
+    }
+    /**
+     * Cargar los detalles de una sola organizacion
+     * @param cedula
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/clientes/organizaciones/{cedula}", method = RequestMethod.GET)
+    public String getOrganizacion(@PathVariable(value = "cedula") long cedula, Model model) {
+        OrganizacionJDBC organizacionJDBC = new OrganizacionJDBC();
+        organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
+        Organizacion organizacion = organizacionJDBC.getOrganizacion(cedula);
+        model.addAttribute("organizacion", organizacion);
+        return "detallesOrg";
+    }
+
+    /**
+     * Redirige a la página de modificacion de organizacion
+     * @param cedula
+     * @param model
+     * @return
+     */
+    @RequestMapping(value= "/clientes/organizaciones/{cedula}/modificar",method= RequestMethod.GET)
+    public String modificarOrganizacion(@PathVariable(value = "cedula") Long cedula, Model model)
+    {
+        if (!model.containsAttribute("organizacion")) {
+            OrganizacionJDBC organizacionJDBC = new OrganizacionJDBC();
+            organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
+            Organizacion organizacion = organizacionJDBC.getOrganizacion(cedula);
+            model.addAttribute("organizacion", organizacion);
+        }
+        return "modificarOrg";
+    }
+
+
+    /**
+     * Procesar la modificacion de una organizacion
+     * @param organizacion
+     * @param cedula
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value="/clientes/organizaciones/{cedula}/modificar", method = RequestMethod.POST)
+    public String procesarModificarOrganizacion(@ModelAttribute Organizacion organizacion, @PathVariable(value = "cedula") long cedula, RedirectAttributes redirectAttributes) {
+        ArrayList<String> errores = OrganizacionValidator.validarOrganizacion(organizacion, false);
+        // Hay errores
+        if (errores.size() != 0) {
+            redirectAttributes.addFlashAttribute("errors", errores);
+            redirectAttributes.addFlashAttribute("organizacion", organizacion);
+            return "redirect:/clientes/organizaciones/" + organizacion.getCedula() + "/modificar";
+        }
+        // Obtener id
+        OrganizacionJDBC organizacionJDBC = new OrganizacionJDBC();
+        organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
+        int idOrg = organizacionJDBC.getOrganizacion(organizacion.getCedula()).getId();
+        String estadoPersona = organizacionJDBC.getOrganizacion(organizacion.getCedula()).getEstado();
+        // Modificar persona
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        clientJDBC.modificarCliente(idOrg, organizacion.getNombre(), organizacion.getDireccion(), organizacion.getCiudad(), estadoPersona);
+        organizacionJDBC.modificarOrganizacion(idOrg,organizacion.getE_nombre(),organizacion.getE_cargo(),organizacion.getE_telefono());
+        redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
+        return "redirect:/clientes/organizaciones/" + organizacion.getCedula() + "?id=" + organizacion.getId();
+    }
+    @RequestMapping(value = "/organizaciones/suspender", method = RequestMethod.POST)
+    public String suspenderCliente(@ModelAttribute Organizacion organizacion, RedirectAttributes redirectAttributes) {
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        clientJDBC.suspenderCliente(organizacion.getId());
         return "redirect:/clientes";
     }
 }
