@@ -20,7 +20,7 @@ public class PersonaValidator {
         PersonaJDBC personaJDBC = new PersonaJDBC();
         personaJDBC.setDataSource(DatabaseSource.getDataSource());
         // Revisar cedula
-        if (esClienteNuevo && (persona.getCedula() > 999999999 || persona.getCedula() < 100000000
+        if (esClienteNuevo && (persona.getCedula() < 99999999 || persona.getCedula() > 1000000000
                 || personaJDBC.existeCedula(persona.getCedula()))) {
             errores.add("Cedula invalida");
         }

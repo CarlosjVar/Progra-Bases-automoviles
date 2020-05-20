@@ -186,7 +186,7 @@ public class ClientesController {
         OrganizacionJDBC organizacionJDBC = new OrganizacionJDBC();
         organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
         organizacionJDBC.agregarOrganizacion(organizacion);
-        redirectAttributes.addFlashAttribute("success_msg", "Persona agregada");
+        redirectAttributes.addFlashAttribute("success_msg", "Organizacion agregada");
         return "redirect:/clientes";
     }
     /**

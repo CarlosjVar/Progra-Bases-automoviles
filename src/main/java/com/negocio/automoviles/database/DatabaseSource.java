@@ -7,8 +7,8 @@ public class DatabaseSource {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         dataSource.setUrl("jdbc:sqlserver://localhost;databaseName=negocio_autosPartes");
-        dataSource.setUsername("Pepito");
-        dataSource.setPassword("pepito123");
+        dataSource.setUsername("pepito");
+        dataSource.setPassword("pepito1234");
         return dataSource;
     }
 }
