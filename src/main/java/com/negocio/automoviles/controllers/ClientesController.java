@@ -12,10 +12,7 @@ import com.negocio.automoviles.models.Persona;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -252,11 +249,33 @@ public class ClientesController {
         redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
         return "redirect:/clientes/organizaciones/" + organizacion.getCedula() + "?id=" + organizacion.getId();
     }
+
     @RequestMapping(value = "/organizaciones/suspender", method = RequestMethod.POST)
     public String suspenderCliente(@ModelAttribute Organizacion organizacion, RedirectAttributes redirectAttributes) {
         ClientJDBC clientJDBC = new ClientJDBC();
         clientJDBC.setDataSource(DatabaseSource.getDataSource());
         clientJDBC.suspenderCliente(organizacion.getId());
         return "redirect:/clientes";
+    }
+
+    @RequestMapping(value = "/clientes/personas/{cedula}/telefonos/add", method = RequestMethod.POST)
+    public String agregarTelefono(Model model, @PathVariable(value = "cedula") int cedula, @RequestParam String telefonoNuevo,
+                                  RedirectAttributes redirectAttributes) {
+        // Validar el telefono
+        if (!PersonaValidator.validarTelefono(telefonoNuevo)) {
+            redirectAttributes.addFlashAttribute("errors", new String[] {"Telefono invalido"});
+            return "redirect:/clientes/personas/" + cedula;
+        }
+        // Verificar si ya existe el telefono
+        PersonaJDBC personaJDBC = new PersonaJDBC();
+        personaJDBC.setDataSource(DatabaseSource.getDataSource());
+        if (personaJDBC.existeTelefono(telefonoNuevo, cedula)) {
+            redirectAttributes.addFlashAttribute("errors", new String[] {"Este telefono ya existe"});
+            return "redirect:/clientes/personas/" + cedula;
+        }
+        // Agregar el telefono
+        personaJDBC.agregarTelefono(cedula, telefonoNuevo);
+        redirectAttributes.addFlashAttribute("success_msg", "Telefono agregado");
+        return "redirect:/clientes/personas/" + cedula;
     }
 }
