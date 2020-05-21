@@ -104,11 +104,17 @@ public class ClientesController {
     public String modificarPersona(@PathVariable(value = "cedula") int cedula, Model model) {
         // Obtener persona
         if (!model.containsAttribute("persona")) {
+            // Obtener la persona
             PersonaJDBC personaJDBC = new PersonaJDBC();
             personaJDBC.setDataSource(DatabaseSource.getDataSource());
             Persona persona = personaJDBC.getPersona(cedula);
             model.addAttribute("persona", persona);
         }
+        // Obtener estados de los clientes
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        List<String> estados =  clientJDBC.getEstados();
+        model.addAttribute("estados", estados);
         return "modificarpersona";
     }
 
@@ -133,13 +139,12 @@ public class ClientesController {
         PersonaJDBC personaJDBC = new PersonaJDBC();
         personaJDBC.setDataSource(DatabaseSource.getDataSource());
         int idPersona = personaJDBC.getPersona(persona.getCedula()).getId();
-        String estadoPersona = personaJDBC.getPersona(persona.getCedula()).getEstado();
         // Modificar persona
         ClientJDBC clientJDBC = new ClientJDBC();
         clientJDBC.setDataSource(DatabaseSource.getDataSource());
-        clientJDBC.modificarCliente(idPersona, persona.getNombre(), persona.getDireccion(), persona.getCiudad(), estadoPersona);
+        clientJDBC.modificarCliente(idPersona, persona.getNombre(), persona.getDireccion(), persona.getCiudad(), persona.getEstado());
         redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
-        return "redirect:/clientes/personas/" + persona.getCedula() + "?id=" + persona.getId();
+        return "redirect:/clientes/personas/" + persona.getCedula();
     }
 
     /**
