@@ -12,10 +12,7 @@ import com.negocio.automoviles.models.Persona;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -107,11 +104,17 @@ public class ClientesController {
     public String modificarPersona(@PathVariable(value = "cedula") int cedula, Model model) {
         // Obtener persona
         if (!model.containsAttribute("persona")) {
+            // Obtener la persona
             PersonaJDBC personaJDBC = new PersonaJDBC();
             personaJDBC.setDataSource(DatabaseSource.getDataSource());
             Persona persona = personaJDBC.getPersona(cedula);
             model.addAttribute("persona", persona);
         }
+        // Obtener estados de los clientes
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        List<String> estados =  clientJDBC.getEstados();
+        model.addAttribute("estados", estados);
         return "modificarpersona";
     }
 
@@ -136,13 +139,12 @@ public class ClientesController {
         PersonaJDBC personaJDBC = new PersonaJDBC();
         personaJDBC.setDataSource(DatabaseSource.getDataSource());
         int idPersona = personaJDBC.getPersona(persona.getCedula()).getId();
-        String estadoPersona = personaJDBC.getPersona(persona.getCedula()).getEstado();
         // Modificar persona
         ClientJDBC clientJDBC = new ClientJDBC();
         clientJDBC.setDataSource(DatabaseSource.getDataSource());
-        clientJDBC.modificarCliente(idPersona, persona.getNombre(), persona.getDireccion(), persona.getCiudad(), estadoPersona);
+        clientJDBC.modificarCliente(idPersona, persona.getNombre(), persona.getDireccion(), persona.getCiudad(), persona.getEstado());
         redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
-        return "redirect:/clientes/personas/" + persona.getCedula() + "?id=" + persona.getId();
+        return "redirect:/clientes/personas/" + persona.getCedula();
     }
 
     /**
@@ -252,11 +254,44 @@ public class ClientesController {
         redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
         return "redirect:/clientes/organizaciones/" + organizacion.getCedula() + "?id=" + organizacion.getId();
     }
+
     @RequestMapping(value = "/organizaciones/suspender", method = RequestMethod.POST)
     public String suspenderCliente(@ModelAttribute Organizacion organizacion, RedirectAttributes redirectAttributes) {
         ClientJDBC clientJDBC = new ClientJDBC();
         clientJDBC.setDataSource(DatabaseSource.getDataSource());
         clientJDBC.suspenderCliente(organizacion.getId());
         return "redirect:/clientes";
+    }
+
+    @RequestMapping(value = "/clientes/personas/{cedula}/telefonos/add", method = RequestMethod.POST)
+    public String agregarTelefono(Model model, @PathVariable(value = "cedula") int cedula, @RequestParam String telefonoNuevo,
+                                  RedirectAttributes redirectAttributes) {
+        // Validar el telefono
+        if (!PersonaValidator.validarTelefono(telefonoNuevo)) {
+            redirectAttributes.addFlashAttribute("errors", new String[] {"Telefono invalido"});
+            return "redirect:/clientes/personas/" + cedula;
+        }
+        // Verificar si ya existe el telefono
+        PersonaJDBC personaJDBC = new PersonaJDBC();
+        personaJDBC.setDataSource(DatabaseSource.getDataSource());
+        if (personaJDBC.existeTelefono(telefonoNuevo, cedula)) {
+            redirectAttributes.addFlashAttribute("errors", new String[] {"Este telefono ya existe"});
+            return "redirect:/clientes/personas/" + cedula;
+        }
+        // Agregar el telefono
+        personaJDBC.agregarTelefono(cedula, telefonoNuevo);
+        redirectAttributes.addFlashAttribute("success_msg", "Telefono agregado");
+        return "redirect:/clientes/personas/" + cedula;
+    }
+
+    @RequestMapping(value = "/clientes/personas/{cedula}/telefonos/borrar", method = RequestMethod.POST)
+    public String borrarTelefono(@PathVariable(value = "cedula") int cedula, @RequestParam String telefono,
+                                 RedirectAttributes redirectAttributes) {
+        // Borrar telefono
+        PersonaJDBC personaJDBC = new PersonaJDBC();
+        personaJDBC.setDataSource(DatabaseSource.getDataSource());
+        personaJDBC.borrarTelefono(cedula, telefono);
+        redirectAttributes.addFlashAttribute("success_msg", "Telefono eliminado");
+        return "redirect:/clientes/personas/" + cedula;
     }
 }

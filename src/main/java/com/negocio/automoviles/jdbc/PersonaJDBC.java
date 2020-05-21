@@ -1,7 +1,9 @@
 package com.negocio.automoviles.jdbc;
 
+import com.negocio.automoviles.mappers.TelefonoMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.negocio.automoviles.daos.PersonaDAO;
@@ -67,6 +69,34 @@ public class PersonaJDBC implements PersonaDAO {
         String query = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
                 "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente WHERE cedula = ?";
         Persona persona = jdbcTemplateObject.queryForObject(query, new Object[]{cedula}, new PersonaMapper());
+        persona.setTelefonos(this.getTelefonos(cedula));
         return persona;
+    }
+
+    @Override
+    public boolean existeTelefono(String telefono, int cedula) {
+        String query = "SELECT telefono FROM telefonos_persona WHERE telefono = ? AND cedula = ?";
+        List<String> telefonos = jdbcTemplateObject.query(query, new Object[] {telefono, cedula}, new TelefonoMapper());
+        System.out.println(telefonos.size());
+        return telefonos.size() > 0;
+    }
+
+    @Override
+    public List<String> getTelefonos(int cedula) {
+        String query = "SELECT telefono FROM telefonos_persona WHERE cedula = ?";
+        List<String> telefonos = jdbcTemplateObject.query(query, new Object[] {cedula}, new TelefonoMapper());
+        return telefonos;
+    }
+
+    @Override
+    public void agregarTelefono(int cedula, String telefono) {
+        String query = "INSERT INTO telefonos_persona (telefono, cedula) VALUES(?, ?)";
+        jdbcTemplateObject.update(query, telefono, cedula);
+    }
+
+    @Override
+    public void borrarTelefono(int cedula, String telefono) {
+        String query = "DELETE FROM telefonos_persona WHERE cedula = ? AND telefono = ?";
+        jdbcTemplateObject.update(query, cedula, telefono);
     }
 }
