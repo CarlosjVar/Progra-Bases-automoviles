@@ -93,4 +93,10 @@ public class PersonaJDBC implements PersonaDAO {
         String query = "INSERT INTO telefonos_persona (telefono, cedula) VALUES(?, ?)";
         jdbcTemplateObject.update(query, telefono, cedula);
     }
+
+    @Override
+    public void borrarTelefono(int cedula, String telefono) {
+        String query = "DELETE FROM telefonos_persona WHERE cedula = ? AND telefono = ?";
+        jdbcTemplateObject.update(query, cedula, telefono);
+    }
 }

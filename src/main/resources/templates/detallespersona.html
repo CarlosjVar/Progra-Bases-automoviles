@@ -25,7 +25,12 @@
             </ul>
             <h4><i class="fa fa-phone"></i> Telefonos</h4>
             <ul class="list-group">
-                <li class="list-group-item" th:each="telefono: ${persona.getTelefonos()}" th:text="${telefono}">
+                <li class="list-group-item" th:each="telefono: ${persona.getTelefonos()}" >
+                    <span th:text="${telefono}"></span>
+                    <form action="#" method="post" onsubmit="return confirm('Seguro que desea continuar?');" th:action="@{'/clientes/personas/' + ${persona.getCedula()} + '/telefonos/borrar'}">
+                        <input type="hidden" name="telefono" th:value="${telefono}">
+                        <button type="submit" class="btn btn-danger btn-block mt-3 float-right">Borrar</button>
+                    </form>
                 </li>
             </ul>
         </div>

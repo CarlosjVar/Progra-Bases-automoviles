@@ -278,4 +278,15 @@ public class ClientesController {
         redirectAttributes.addFlashAttribute("success_msg", "Telefono agregado");
         return "redirect:/clientes/personas/" + cedula;
     }
+
+    @RequestMapping(value = "/clientes/personas/{cedula}/telefonos/borrar", method = RequestMethod.POST)
+    public String borrarTelefono(@PathVariable(value = "cedula") int cedula, @RequestParam String telefono,
+                                 RedirectAttributes redirectAttributes) {
+        // Borrar telefono
+        PersonaJDBC personaJDBC = new PersonaJDBC();
+        personaJDBC.setDataSource(DatabaseSource.getDataSource());
+        personaJDBC.borrarTelefono(cedula, telefono);
+        redirectAttributes.addFlashAttribute("success_msg", "Telefono eliminado");
+        return "redirect:/clientes/personas/" + cedula;
+    }
 }

@@ -1,11 +1,13 @@
 package com.negocio.automoviles.jdbc;
 
 import com.negocio.automoviles.daos.ClienteDAO;
+import com.negocio.automoviles.mappers.EstadoMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClientJDBC implements ClienteDAO {
@@ -69,5 +71,14 @@ public class ClientJDBC implements ClienteDAO {
         jdbcTemplateObject.update(query, id);
     }
 
-
+    /**
+     * Obtiene todos los estados
+     * @return Los estados disponibles para un cliente
+     */
+    @Override
+    public List<String> getEstados() {
+        String query = "SELECT estado FROM estados";
+        List<String> estados = jdbcTemplateObject.query(query, new EstadoMapper());
+        return estados;
+    }
 }

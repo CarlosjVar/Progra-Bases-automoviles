@@ -15,4 +15,5 @@ public interface PersonaDAO {
     public boolean existeTelefono(String telefono, int cedula);
     public List<String> getTelefonos(int cedula);
     public void agregarTelefono(int cedula, String telefono);
+    public void borrarTelefono(int cedula, String telefono);
 }
