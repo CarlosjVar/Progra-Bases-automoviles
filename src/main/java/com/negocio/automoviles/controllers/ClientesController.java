@@ -221,6 +221,11 @@ public class ClientesController {
             Organizacion organizacion = organizacionJDBC.getOrganizacion(cedula);
             model.addAttribute("organizacion", organizacion);
         }
+        //Obtener estados del cliente
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        List<String> estados =  clientJDBC.getEstados();
+        model.addAttribute("estados", estados);
         return "modificarOrg";
     }
 
@@ -245,11 +250,11 @@ public class ClientesController {
         OrganizacionJDBC organizacionJDBC = new OrganizacionJDBC();
         organizacionJDBC.setDataSource(DatabaseSource.getDataSource());
         int idOrg = organizacionJDBC.getOrganizacion(organizacion.getCedula()).getId();
-        String estadoPersona = organizacionJDBC.getOrganizacion(organizacion.getCedula()).getEstado();
+
         // Modificar persona
         ClientJDBC clientJDBC = new ClientJDBC();
         clientJDBC.setDataSource(DatabaseSource.getDataSource());
-        clientJDBC.modificarCliente(idOrg, organizacion.getNombre(), organizacion.getDireccion(), organizacion.getCiudad(), estadoPersona);
+        clientJDBC.modificarCliente(idOrg, organizacion.getNombre(), organizacion.getDireccion(), organizacion.getCiudad(), organizacion.getEstado());
         organizacionJDBC.modificarOrganizacion(idOrg,organizacion.getE_nombre(),organizacion.getE_cargo(),organizacion.getE_telefono());
         redirectAttributes.addFlashAttribute("success_msg", "Persona modificada");
         return "redirect:/clientes/organizaciones/" + organizacion.getCedula() + "?id=" + organizacion.getId();

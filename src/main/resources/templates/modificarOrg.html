@@ -37,6 +37,14 @@
                     <div class="form-group">
                         <input type="text" th:field="*{E_telefono}" placeholder="Numero del encargado..." class="form-control">
                     </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">Estados:</label>
+                        </div>
+                        <select th:field="*{estado}" class="custom-select">
+                            <option th:value="${estado}" th:each="estado : ${estados}" th:text="${estado}"></option>
+                        </select>
+                    </div>
 
                     <button type="submit" class="btn btn-warning btn-block"><i class="fa fa-plus"></i> Modificar Organizacion</button>
                 </form>

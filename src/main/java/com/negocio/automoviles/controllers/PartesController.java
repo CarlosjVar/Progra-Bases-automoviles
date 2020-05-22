@@ -1,4 +1,5 @@
-package com.negocio.automoviles.controllers;
+
+
 
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.PartesJDBC;
@@ -15,7 +16,8 @@ import java.util.List;
  *
  */
 @Controller
-public class PartesController {
+public class PartesController 
+{
 
     /**
      * Carga la pagina principal para partes
@@ -30,6 +32,15 @@ public class PartesController {
         List<Parte> partes = partesJDBC.getPartes();
         model.addAttribute("partes", partes);
         return "partes";
+    }
+ 
+    @RequestMapping(value = "/partes/add", method = RequestMethod.GET)
+    public String AddParte(Model model)
+    {
+        if (!model.containsAttribute("parte")) {
+        model.addAttribute("parte", new Parte());
+    }
+        return "addparte";
     }
 
 }
