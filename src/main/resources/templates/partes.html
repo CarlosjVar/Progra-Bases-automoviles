@@ -19,10 +19,20 @@
         <div class="col-md-9">
             <table class="table table-striped">
                 <thead class="thead-dark">
-
+                    <th>NOMBRE</th>
+                    <th>MARCA</th>
+                    <th>FABRICANTE</th>
+                    <th>DETALLES</th>
                 </thead>
                 <tbody>
-
+                <tr th:each="parte: ${partes}">
+                    <td th:text="${parte.getNombre()}"></td>
+                    <td th:text="${parte.getMarca()}"></td>
+                    <td th:text="${parte.getFabricante()}"></td>
+                    <td>
+                        <a href="#" class="btn btn-dark btn-block">Detalles</a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
