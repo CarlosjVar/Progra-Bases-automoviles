@@ -1,6 +1,10 @@
 package com.negocio.automoviles.jdbc;
 
 import com.negocio.automoviles.daos.PartesDAO;
+import com.negocio.automoviles.database.DatabaseSource;
+import com.negocio.automoviles.mappers.FabricantesPMapper;
+import com.negocio.automoviles.mappers.MarcPIDMapper;
+import com.negocio.automoviles.mappers.MarcasPMapper;
 import com.negocio.automoviles.mappers.PartesMapper;
 import com.negocio.automoviles.models.Parte;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,8 +43,80 @@ public class PartesJDBC implements PartesDAO {
         return partes;
     }
 
+    /**
+     * Obtiene todas las partes con el modelo y año brindados
+     * @param modelo
+     * @param anio
+     * @return
+     */
     @Override
     public List<Parte> getPartesByModeloAnio(String modelo, int anio) {
         return null;
     }
+
+    /**
+     * Agrega una parte a la base de datos
+     * @param parte
+     */
+    @Override
+    public void agregarParte(Parte parte,int Marcaid,int Fabricanteid) {
+        PartesJDBC partesJDBC= new PartesJDBC();
+        partesJDBC.setDataSource(DatabaseSource.getDataSource());
+        String query="INSERT INTO partes (nombre,marca_id,fabricante_id) VALUES(? ,? ,?)";
+        jdbcTemplateObject.update(query,parte.getNombre(),Marcaid,Fabricanteid);
+        ;
+    }
+
+    /**
+     * Retorna una lista con todas las marcas de partes
+     * @return
+     */
+    @Override
+    public List<String> getMarcasP()
+    {
+        String query = "SELECT nombre FROM marcas_partes";
+        List<String> marcas= jdbcTemplateObject.query(query,new MarcasPMapper());
+        return marcas;
+    }
+
+    /**
+     * Retorna una lista con todos los fabricantes de partes
+     * @return
+     */
+    @Override
+    public List<String> getFabricantresP()
+    {
+        String query = "SELECT nombre FROM fabricantes_partes";
+        List<String> fabricantes=jdbcTemplateObject.query(query,new FabricantesPMapper());
+        return fabricantes;
+
+    }
+
+    @Override
+    public int getIDMarcasP(String nombre) {
+        String query = "SELECT id FROM marcas_partes" +
+                " WHERE marcas_partes.nombre= ?";
+        int id=jdbcTemplateObject.queryForObject(query,new Object[]{nombre},new MarcPIDMapper());
+        return id;
+    }
+
+    @Override
+    public int getIDFabricantesP(String nombre) {
+        String query = "SELECT id FROM fabricantes_partes" +
+                " WHERE fabricantes_partes.nombre= ?";
+        int id=jdbcTemplateObject.queryForObject(query,new Object[]{nombre},new MarcPIDMapper());
+        return id;
+    }
+
+    @Override
+    public boolean existeParte(String nombre) {
+        String query = "SELECT partes.id, partes.nombre, marcas_partes.nombre AS marca, fabricantes_partes.nombre AS fabricante FROM partes " +
+                "INNER JOIN marcas_partes ON partes.marca_id = marcas_partes.id " +
+                "INNER JOIN fabricantes_partes ON partes.fabricante_id = fabricantes_partes.id " +
+                " WHERE partes.nombre = ?";
+        List<Parte>partes=jdbcTemplateObject.query(query,new Object[] {nombre},new PartesMapper());
+
+        return partes.size()>0 ;
+    }
+
 }
