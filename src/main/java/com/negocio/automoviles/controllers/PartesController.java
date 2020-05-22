@@ -34,12 +34,20 @@ public class PartesController
         return "partes";
     }
 
+    /**
+     * Carga la pagina para los detalles de una parte
+     * @param model El modelo para cargar datos
+     * @param id El id de la parte
+     * @return La pagina de detalles para la parte
+     */
     @RequestMapping(value = "/partes/{id}", method = RequestMethod.GET)
     public String detallesParte(Model model, @PathVariable(value = "id") int id) {
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
         // Obtener parte
-        return null;
+        Parte parte = partesJDBC.getParte(id);
+        model.addAttribute("parte", parte);
+        return "detallesparte";
     }
  
     @RequestMapping(value = "/partes/add", method = RequestMethod.GET)
