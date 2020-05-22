@@ -5,6 +5,7 @@ import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.models.Parte;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -31,6 +32,14 @@ public class PartesController
         List<Parte> partes = partesJDBC.getPartes();
         model.addAttribute("partes", partes);
         return "partes";
+    }
+
+    @RequestMapping(value = "/partes/{id}", method = RequestMethod.GET)
+    public String detallesParte(Model model, @PathVariable(value = "id") int id) {
+        PartesJDBC partesJDBC = new PartesJDBC();
+        partesJDBC.setDataSource(DatabaseSource.getDataSource());
+        // Obtener parte
+        return null;
     }
  
     @RequestMapping(value = "/partes/add", method = RequestMethod.GET)

@@ -10,5 +10,6 @@ import java.util.List;
 public interface PartesDAO {
     public void setDataSource(DataSource ds);
     public List<Parte> getPartes();
+    public Parte getParte(int id);
     public List<Parte> getPartesByModeloAnio(String modelo, int anio);
 }
