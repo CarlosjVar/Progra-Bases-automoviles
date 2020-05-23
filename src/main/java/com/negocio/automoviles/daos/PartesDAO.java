@@ -10,6 +10,7 @@ import java.util.List;
 public interface PartesDAO {
     public void setDataSource(DataSource ds);
     public List<Parte> getPartes();
+    public Parte getParte(int id);
     public List<Parte> getPartesByModeloAnio(String modelo, int anio);
     public void agregarParte(Parte parte,int Marcaid,int Fabricanteid);
     public List<String> getMarcasP();

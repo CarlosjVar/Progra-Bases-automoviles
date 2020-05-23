@@ -9,6 +9,9 @@ import com.negocio.automoviles.validators.ParteValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,6 +36,7 @@ public class PartesController
      */
     @RequestMapping(value = "/partes", method = RequestMethod.GET)
     public String partes(Model model) {
+        // TODO: Agregar funcionalidad para buscar segun modelo y anio de auto
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
         // Obtener las partes
@@ -42,10 +46,28 @@ public class PartesController
     }
 
     /**
+
      * Carga la página para agregar partes
      * @param model
      * @return
      */
+
+     * Carga la pagina para los detalles de una parte
+     * @param model El modelo para cargar datos
+     * @param id El id de la parte
+     * @return La pagina de detalles para la parte
+     */
+    @RequestMapping(value = "/partes/{id}", method = RequestMethod.GET)
+    public String detallesParte(Model model, @PathVariable(value = "id") int id) {
+        PartesJDBC partesJDBC = new PartesJDBC();
+        partesJDBC.setDataSource(DatabaseSource.getDataSource());
+        // Obtener parte
+        Parte parte = partesJDBC.getParte(id);
+        model.addAttribute("parte", parte);
+        return "detallesparte";
+    }
+ 
+
     @RequestMapping(value = "/partes/add", method = RequestMethod.GET)
     public String AddParte(Model model)
     {

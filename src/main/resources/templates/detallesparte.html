@@ -1,0 +1,31 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout.html}"
+      lang="en"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Detalles Parte</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <a th:href="@{~/partes}" class="btn btn-light mb-3"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Volver</a>
+    <h2 class="mb-4"><i class="fa fa-cog"></i> Parte: <span th:text="${parte.getNombre()}"></span></h2>
+    <div class="row">
+        <div class="col-md-8">
+            <ul class="list-group mb-4">
+                <li class="list-group-item"><strong>Fabricante: </strong> <span th:text="${parte.getFabricante()}"></span></li>
+                <li class="list-group-item"><strong>Marca: </strong> <span th:text="${parte.getMarca()}"></span></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <!-- Funcionalidad para parte -->
+        </div>
+    </div>
+</section>
+</body>
+</html>
