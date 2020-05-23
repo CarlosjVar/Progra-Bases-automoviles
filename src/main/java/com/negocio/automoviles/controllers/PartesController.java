@@ -26,6 +26,7 @@ public class PartesController
      */
     @RequestMapping(value = "/partes", method = RequestMethod.GET)
     public String partes(Model model) {
+        // TODO: Agregar funcionalidad para buscar segun modelo y anio de auto
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
         // Obtener las partes
