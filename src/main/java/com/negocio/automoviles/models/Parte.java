@@ -1,5 +1,8 @@
 package com.negocio.automoviles.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Parte {
     private int parteID;
     private String nombre;
@@ -36,5 +39,16 @@ public class Parte {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public static ArrayList<String> getNombres(List<Parte> partes)
+    {
+        ArrayList<String> nombres=new ArrayList<String>();
+        for (Parte p:partes
+        )
+        {
+            nombres.add(p.getNombre());
+        }
+        return nombres;
     }
 }
