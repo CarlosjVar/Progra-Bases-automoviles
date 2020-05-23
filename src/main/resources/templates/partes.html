@@ -30,14 +30,14 @@
                     <td th:text="${parte.getMarca()}"></td>
                     <td th:text="${parte.getFabricante()}"></td>
                     <td>
-                        <a href="#" class="btn btn-dark btn-block">Detalles</a>
+                        <a th:href="@{'~/partes/' + ${parte.getParteID()}}" class="btn btn-dark btn-block">Detalles</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-md-3">
-            <a th:href="@{/partes/add}" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar parte</a>
+            <a th:href="@{~/partes/add}" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar parte</a>
         </div>
     </div>
 </section>

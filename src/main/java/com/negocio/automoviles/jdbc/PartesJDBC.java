@@ -39,6 +39,20 @@ public class PartesJDBC implements PartesDAO {
         return partes;
     }
 
+    /**
+     * Obtiene una parte de acuerdo al id
+     * @param id El id de la parte
+     * @return La parte segun el id
+     */
+    @Override
+    public Parte getParte(int id) {
+        String query = "SELECT partes.id, partes.nombre, marcas_partes.nombre AS marca, fabricantes_partes.nombre AS fabricante FROM partes " +
+                "INNER JOIN marcas_partes ON partes.marca_id = marcas_partes.id " +
+                "INNER JOIN fabricantes_partes ON partes.fabricante_id = fabricantes_partes.id WHERE partes.id = ?";
+        Parte parte = jdbcTemplateObject.queryForObject(query, new Object[] {id}, new PartesMapper());
+        return parte;
+    }
+
     @Override
     public List<Parte> getPartesByModeloAnio(String modelo, int anio) {
         return null;
