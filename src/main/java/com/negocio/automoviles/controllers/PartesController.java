@@ -1,5 +1,7 @@
 package com.negocio.automoviles.controllers;
+
 import com.negocio.automoviles.database.DatabaseSource;
+import com.negocio.automoviles.jdbc.AutomovilesJDBC;
 import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.jdbc.ProvedoresJDBC;
 import com.negocio.automoviles.models.HolderPartProvedor;
@@ -9,15 +11,11 @@ import com.negocio.automoviles.validators.ParteValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import org.springframework.web.bind.annotation.PathVariable;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.xml.crypto.Data;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,22 +34,20 @@ public class PartesController
      */
     @RequestMapping(value = "/partes", method = RequestMethod.GET)
     public String partes(Model model) {
-        // TODO: Agregar funcionalidad para buscar segun modelo y anio de auto
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
         // Obtener las partes
         List<Parte> partes = partesJDBC.getPartes();
+        // Obtener anios disponibles
+        AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
+        automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
+        model.addAttribute("modelos", automovilesJDBC.getModelosDisponibles());
+        model.addAttribute("anios", automovilesJDBC.getAniosDisponinles());
         model.addAttribute("partes", partes);
         return "partes";
     }
 
     /**
-
-     * Carga la página para agregar partes
-     * @param model
-     * @return
-     */
-
      * Carga la pagina para los detalles de una parte
      * @param model El modelo para cargar datos
      * @param id El id de la parte
