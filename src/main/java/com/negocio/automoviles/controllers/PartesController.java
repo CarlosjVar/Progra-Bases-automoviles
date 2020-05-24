@@ -60,11 +60,15 @@ public class PartesController
      */
     @RequestMapping(value = "/partes/{id}", method = RequestMethod.GET)
     public String detallesParte(Model model, @PathVariable(value = "id") int id) {
+        // Acceso a las partes
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
-        // Obtener parte
-        Parte parte = partesJDBC.getParte(id);
-        model.addAttribute("parte", parte);
+        // Acceso a los automoviles
+        AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
+        automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
+        model.addAttribute("modelos", automovilesJDBC.getModelosDisponibles());
+        model.addAttribute("anios", automovilesJDBC.getAniosDisponinles());
+        model.addAttribute("parte", partesJDBC.getParte(id));
         return "detallesparte";
     }
  
@@ -97,7 +101,6 @@ public class PartesController
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
         int idM=partesJDBC.getIDMarcasP(parte.getMarca());
         int idF=partesJDBC.getIDFabricantesP(parte.getFabricante());
-        System.out.println(idM);
         partesJDBC.agregarParte(parte,idM,idF);
         redirectAttributes.addFlashAttribute("success_msg", "Parte agregada");
         return "redirect:/partes";
