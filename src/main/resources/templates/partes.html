@@ -17,14 +17,14 @@
     <hr>
     <div class="row">
         <div class="col-md-9">
-            <form action="" method="post">
+            <form action="#" th:action="@{/partes}" method="get">
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <label class="input-group-text">Modelo:</label>
                             </div>
-                            <select class="custom-select">
+                            <select name="modelo" class="custom-select">
                                 <option th:value="${modelo}" th:each="modelo : ${modelos}" th:text="${modelo}"></option>
                             </select>
                         </div>
@@ -34,7 +34,7 @@
                             <div class="input-group-prepend">
                                 <label class="input-group-text">Año:</label>
                             </div>
-                            <select class="custom-select">
+                            <select name="anio" class="custom-select">
                                 <option th:value="${anio}" th:each="anio : ${anios}" th:text="${anio}"></option>
                             </select>
                         </div>

@@ -10,10 +10,7 @@ import com.negocio.automoviles.models.Provedor;
 import com.negocio.automoviles.validators.ParteValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -33,11 +30,19 @@ public class PartesController
      * @return La pagina principal de partes
      */
     @RequestMapping(value = "/partes", method = RequestMethod.GET)
-    public String partes(Model model) {
+    public String partes(Model model,
+                         @RequestParam(value = "modelo", required = false) String modelo,
+                         @RequestParam(value = "anio", required = false) Integer anio)
+    {
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
-        // Obtener las partes
-        List<Parte> partes = partesJDBC.getPartes();
+        // Revisar si se esta buscando por modelo y anio
+        List<Parte> partes;
+        if (modelo != null && anio != null) {
+            partes = partesJDBC.getPartesByModeloAnio(modelo, anio);
+        } else {
+            partes = partesJDBC.getPartes();
+        }
         // Obtener anios disponibles
         AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
         automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
