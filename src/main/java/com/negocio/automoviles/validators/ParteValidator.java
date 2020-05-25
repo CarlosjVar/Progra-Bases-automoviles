@@ -2,6 +2,7 @@ package com.negocio.automoviles.validators;
 
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.PartesJDBC;
+import com.negocio.automoviles.models.HolderPartProvedor;
 
 import java.util.ArrayList;
 
@@ -19,5 +20,19 @@ public class ParteValidator {
             errores.add("Nombre inválido");
         }
         return  errores;
+    }
+    public static ArrayList<String> validarRelacion (HolderPartProvedor holder){
+        ArrayList<String> errores = new ArrayList<String>();
+        if(holder.precio<=0f || holder.precio>2147483647f)
+        {
+            errores.add("Precio inválido");
+        }
+        if(holder.porcentaje_ganancia<=0f || holder.porcentaje_ganancia>999.99f)
+        {
+            errores.add("Porcentaje de ganancia inválido");
+        }
+
+
+        return errores;
     }
 }

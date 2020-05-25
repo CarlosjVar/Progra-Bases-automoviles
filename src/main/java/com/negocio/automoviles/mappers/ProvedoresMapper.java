@@ -14,7 +14,7 @@ public class ProvedoresMapper implements RowMapper<Provedor> {
         provedor.setNombre(rs.getString("nombre"));
         provedor.setCiudad(rs.getString("ciudad"));
         provedor.setDirección(rs.getString("direccion"));
-        System.out.println(provedor.nombre);
+
         //TODO: mappeo telefono
         //provedor.setTelefonos();
         provedor.setNombre_contacto(rs.getString("nombre_contacto"));

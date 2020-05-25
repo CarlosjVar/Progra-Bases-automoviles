@@ -2,14 +2,14 @@ package com.negocio.automoviles.jdbc;
 
 import com.negocio.automoviles.daos.PartesDAO;
 import com.negocio.automoviles.database.DatabaseSource;
-import com.negocio.automoviles.mappers.FabricantesPMapper;
-import com.negocio.automoviles.mappers.MarcPIDMapper;
-import com.negocio.automoviles.mappers.MarcasPMapper;
-import com.negocio.automoviles.mappers.PartesMapper;
+import com.negocio.automoviles.mappers.*;
+import com.negocio.automoviles.models.HolderPartProvedor;
 import com.negocio.automoviles.models.Parte;
+import com.negocio.automoviles.models.ParteProvedor;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,6 +103,11 @@ public class PartesJDBC implements PartesDAO {
 
     }
 
+    /**
+     * Consigue el id de las marcas
+     * @param nombre
+     * @return
+     */
     @Override
     public int getIDMarcasP(String nombre) {
         String query = "SELECT id FROM marcas_partes" +
@@ -111,6 +116,11 @@ public class PartesJDBC implements PartesDAO {
         return id;
     }
 
+    /**
+     * Obtiene el ID de los fabricantes
+     * @param nombre
+     * @return
+     */
     @Override
     public int getIDFabricantesP(String nombre) {
         String query = "SELECT id FROM fabricantes_partes" +
@@ -119,6 +129,11 @@ public class PartesJDBC implements PartesDAO {
         return id;
     }
 
+    /**
+     * Verifica si existe una parte
+     * @param nombre
+     * @return
+     */
     @Override
     public boolean existeParte(String nombre) {
         String query = "SELECT partes.id, partes.nombre, marcas_partes.nombre AS marca, fabricantes_partes.nombre AS fabricante FROM partes " +
@@ -129,5 +144,33 @@ public class PartesJDBC implements PartesDAO {
 
         return partes.size()>0 ;
     }
+
+    /**
+     * Crea una relación en la tabla de asociación de partes-provedores
+     * @param info
+     * @param parteID
+     * @param provedorID
+     */
+    @Override
+    public void relacionParteProvedor(HolderPartProvedor info,int parteID,int provedorID) {
+    String query="INSERT INTO proveido_por(parte_id,provedor_id,precio,porcentaje_ganancia) VALUES(?,?,?,?)";
+    jdbcTemplateObject.update(query,parteID,provedorID,info.precio,info.porcentaje_ganancia);
+    }
+
+    /**
+     * Retorna el id de una parte basado en su nombre
+     * @param nombreP
+     * @return
+     */
+    @Override
+    public int getIDParte(String nombreP) {
+        String query = "SELECT partes.id  FROM partes " +
+                " WHERE partes.nombre = ?";
+        int ID=jdbcTemplateObject.queryForObject(query,new Object[] {nombreP},new MarcPIDMapper());
+        return  ID;
+    }
+
+
+
 
 }
