@@ -46,4 +46,43 @@ public class AutomovilesJDBC implements AutomovilesDAO {
         List<Integer> anios = jdbcTemplateObject.query(query, new AnioMapper());
         return anios;
     }
+
+    /**
+     * Verifica si existe el automovil
+     * @param modelo El modelo del automovil
+     * @param anio El anio del automovil
+     * @return Si existe el autmovil o no
+     */
+    @Override
+    public boolean existeAutomovil(String modelo, int anio) {
+        String query = "SELECT modelo FROM automoviles WHERE modelo = ? AND anio = ?";
+        int numeroFilas = jdbcTemplateObject.query(query, new Object[]{modelo, anio}, new ModeloMapper()).size();
+        return numeroFilas > 0;
+    }
+
+    /**
+     * Verifica si ya existe una asociacion de automovil con parte
+     * @param parteId El id de la parte
+     * @param autoModelo El modelo del automovil
+     * @param autoAnio El anio del automovil
+     * @return Si existe la asociacion o no
+     */
+    @Override
+    public boolean existeAsociacion(int parteId, String autoModelo, int autoAnio) {
+        String query = "SELECT auto_modelo FROM es_parte_de WHERE auto_modelo = ? AND auto_anio = ? AND parte_id = ?";
+        int numeroFilas = jdbcTemplateObject.query(query, new Object[]{autoModelo, autoAnio, parteId}, new ModeloMapper()).size();
+        return numeroFilas > 0;
+    }
+
+    /**
+     * Crea una nueva asociacion de parte con automovil
+     * @param parteId El id de la parte
+     * @param autoModelo El modelo del auto
+     * @param autoAnio El anio del auto
+     */
+    @Override
+    public void asociarAutomovil(int parteId, String autoModelo, int autoAnio) {
+        String query = "INSERT INTO es_parte_de (parte_id, auto_modelo, auto_anio) VALUES(?, ?, ?)";
+        jdbcTemplateObject.update(query, new Object[]{parteId, autoModelo, autoAnio});
+    }
 }

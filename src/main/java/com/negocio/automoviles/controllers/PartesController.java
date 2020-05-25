@@ -71,6 +71,24 @@ public class PartesController
         model.addAttribute("parte", partesJDBC.getParte(id));
         return "detallesparte";
     }
+
+    /**
+     * Asocia un automovil con la parte
+     * @param id El id de la parte
+     * @param modelo Modelo del automovil
+     * @param anio Anio del automovil
+     * @param redirectAttributes Atributos para redirigir la pagina
+     * @return Redirigir a la pagina de la parte
+     */
+    @RequestMapping(value = "/partes/{id}/asociar/automoviles", method = RequestMethod.POST)
+    public String asociarAutomovil(@PathVariable(value = "id") int id,
+                                   @RequestParam String modelo,
+                                   @RequestParam int anio,
+                                   RedirectAttributes redirectAttributes)
+    {
+        
+        return "redirect:/partes/" + id;
+    }
  
 
     @RequestMapping(value = "/partes/add", method = RequestMethod.GET)
