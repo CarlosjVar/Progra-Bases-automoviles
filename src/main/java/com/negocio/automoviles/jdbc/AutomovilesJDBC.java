@@ -69,7 +69,7 @@ public class AutomovilesJDBC implements AutomovilesDAO {
      */
     @Override
     public boolean existeAsociacion(int parteId, String autoModelo, int autoAnio) {
-        String query = "SELECT auto_modelo FROM es_parte_de WHERE auto_modelo = ? AND auto_anio = ? AND parte_id = ?";
+        String query = "SELECT auto_modelo AS modelo FROM es_parte_de WHERE auto_modelo = ? AND auto_anio = ? AND parte_id = ?";
         int numeroFilas = jdbcTemplateObject.query(query, new Object[]{autoModelo, autoAnio, parteId}, new ModeloMapper()).size();
         return numeroFilas > 0;
     }

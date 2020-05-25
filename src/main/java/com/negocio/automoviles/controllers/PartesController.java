@@ -86,7 +86,22 @@ public class PartesController
                                    @RequestParam int anio,
                                    RedirectAttributes redirectAttributes)
     {
-        
+        // Acceso a los automoviles
+        AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
+        automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
+        // Verificar si existe el automovil
+        if (!automovilesJDBC.existeAutomovil(modelo, anio)) {
+            redirectAttributes.addFlashAttribute("errors", new String[]{"No existe dicho automovil"});
+            return "redirect:/partes/" + id;
+        }
+        // Verificar si ya existe la asociacion
+        if (automovilesJDBC.existeAsociacion(id, modelo, anio)) {
+            redirectAttributes.addFlashAttribute("errors", new String[]{"Esta asociacion ya existe"});
+            return "redirect:/partes/" + id;
+        }
+        // Asociar el automovil
+        automovilesJDBC.asociarAutomovil(id, modelo, anio);
+        redirectAttributes.addFlashAttribute("success_msg", "Automovil asociado");
         return "redirect:/partes/" + id;
     }
  

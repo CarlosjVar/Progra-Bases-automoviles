@@ -32,7 +32,7 @@
             <div class="card">
                 <h5 class="card-header"><i class="fa fa-car"></i> Asociar con un automovil</h5>
                 <div class="card-body">
-                    <form action="#">
+                    <form action="#" th:action="@{'/partes/' + ${parte.getParteID()} + '/asociar/automoviles'}" method="post">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <label class="input-group-text">Modelo:</label>
