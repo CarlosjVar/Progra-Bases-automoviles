@@ -6,7 +6,7 @@ import com.negocio.automoviles.models.Persona;
 import javax.sql.DataSource;
 import java.util.List;
 
-public interface OrganiazacionDAO {
+public interface OrganizacionDAO {
     public void setDataSource(DataSource ds);
     public Organizacion getOrganizacion(Long cedula);
     public List<Organizacion> getOrganizaciones();

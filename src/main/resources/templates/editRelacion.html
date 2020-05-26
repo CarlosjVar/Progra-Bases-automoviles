@@ -9,30 +9,22 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Afiliar parte</title>
+    <title>Modificar detalles de afiliación</title>
 </head>
 <body>
 <section layout:fragment="content">
     <div class="row">
         <div class="col-md-6 mx-auto">
             <div class="card card-body bg-light">
-                <h4><i class="fa fa-user"></i>Crear afilicación</h4>
+                <h4><i class="fa fa-user"></i>Modificar detalles de afiliación</h4>
                 <p>Todos los campos son requeridos</p>
-                <form action="#" th:action="@{/partes/join}" th:object="${holder}" method="post">
+                <form action="#" th:action="@{/partes/joinEdit}" th:object="${holder}" method="post">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <label class="input-group-text">Partes:</label>
+                            <label class="input-group-text">Estados:</label>
                         </div>
-                        <select th:field="*{parte}" class="custom-select">
-                            <option th:value="${parte}" th:each="parte : ${partes}" th:text="${parte}"></option>
-                        </select>
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">Provedores:</label>
-                        </div>
-                        <select th:field="*{proveedor}" class="custom-select">
-                            <option th:value="${proveedor}" th:each="proveedor : ${provedores}" th:text="${proveedor}"></option>
+                        <select th:field="*{relacion}" class="custom-select">
+                            <option th:value="${texto.parte+'-'+texto.proveedor}" th:each="texto : ${relaciones}" th:text="${texto.parte+'-'+texto.proveedor}"></option>
                         </select>
                     </div>
                     <div class="form-group">

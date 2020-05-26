@@ -1,17 +1,14 @@
 package com.negocio.automoviles.jdbc;
 
-import com.negocio.automoviles.daos.OrganiazacionDAO;
+import com.negocio.automoviles.daos.OrganizacionDAO;
 import com.negocio.automoviles.mappers.OrganizacionMapper;
-import com.negocio.automoviles.mappers.PersonaMapper;
 import com.negocio.automoviles.models.Organizacion;
-import com.negocio.automoviles.models.Persona;
 import org.springframework.jdbc.core.JdbcTemplate;
-import com.negocio.automoviles.jdbc.ClientJDBC;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-public class OrganizacionJDBC implements OrganiazacionDAO {
+public class OrganizacionJDBC implements OrganizacionDAO {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplateObject;
 

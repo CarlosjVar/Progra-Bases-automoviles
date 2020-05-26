@@ -28,6 +28,10 @@
                 <li class="list-group-item"><strong>Marca: </strong> <span th:text="${parte.getMarca()}"></span></li>
             </ul>
         </div>
+        <form action="#" th:action="@{/partes/eliminar}" method="post" th:object="${parte}">
+            <input type="hidden" th:field="*{nombre}" >
+            <input type="submit" value="Eliminar parte" class="mt-3 btn btn-danger btn-block">
+        </form>
         <div class="col-md-4">
             <div class="card">
                 <h5 class="card-header"><i class="fa fa-car"></i> Asociar con un automovil</h5>
@@ -55,7 +59,10 @@
             </div>
             <!-- Funcionalidad para parte -->
         </div>
+
     </div>
+
+
 </section>
 </body>
 </html>
