@@ -1,21 +1,17 @@
 package com.negocio.automoviles.controllers;
+
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.OrdenJDBC;
 import com.negocio.automoviles.jdbc.ParteProvedorJDBC;
+import com.negocio.automoviles.jdbc.AutomovilesJDBC;
 import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.jdbc.ProvedoresJDBC;
 import com.negocio.automoviles.models.*;
 import com.negocio.automoviles.validators.ParteValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import org.springframework.web.bind.annotation.PathVariable;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 import java.sql.SQLOutput;
@@ -36,31 +32,82 @@ public class PartesController
      * @return La pagina principal de partes
      */
     @RequestMapping(value = "/partes", method = RequestMethod.GET)
-    public String partes(Model model) {
-        // TODO: Agregar funcionalidad para buscar segun modelo y anio de auto
+    public String partes(Model model,
+                         @RequestParam(value = "modelo", required = false) String modelo,
+                         @RequestParam(value = "anio", required = false) Integer anio)
+    {
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
-        // Obtener las partes
-        List<Parte> partes = partesJDBC.getPartes();
+        // Revisar si se esta buscando por modelo y anio
+        List<Parte> partes;
+        if (modelo != null && anio != null) {
+            partes = partesJDBC.getPartesByModeloAnio(modelo, anio);
+        } else {
+            partes = partesJDBC.getPartes();
+        }
+        // Obtener anios disponibles
+        AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
+        automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
+        model.addAttribute("modelos", automovilesJDBC.getModelosDisponibles());
+        model.addAttribute("anios", automovilesJDBC.getAniosDisponinles());
         model.addAttribute("partes", partes);
         return "partes";
     }
 
     /**
-
-     * Carga la página para agregar partes
-     * @param model
-     * @return
+     * Carga la pagina para los detalles de una parte
+     * @param model El modelo para cargar datos
+     * @param id El id de la parte
+     * @return La pagina de detalles para la parte
      */
     @RequestMapping(value = "/partes/{id}", method = RequestMethod.GET)
     public String detallesParte(Model model, @PathVariable(value = "id") int id) {
+        // Acceso a las partes
         PartesJDBC partesJDBC = new PartesJDBC();
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
-        // Obtener parte
-        Parte parte = partesJDBC.getParte(id);
-        model.addAttribute("parte", parte);
+        // Acceso a los automoviles
+        AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
+        automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
+        model.addAttribute("modelos", automovilesJDBC.getModelosDisponibles());
+        model.addAttribute("anios", automovilesJDBC.getAniosDisponinles());
+        model.addAttribute("parte", partesJDBC.getParte(id));
         return "detallesparte";
     }
+
+
+    /**
+     * Asocia un automovil con la parte
+     * @param id El id de la parte
+     * @param modelo Modelo del automovil
+     * @param anio Anio del automovil
+     * @param redirectAttributes Atributos para redirigir la pagina
+     * @return Redirigir a la pagina de la parte
+     */
+    @RequestMapping(value = "/partes/{id}/asociar/automoviles", method = RequestMethod.POST)
+    public String asociarAutomovil(@PathVariable(value = "id") int id,
+                                   @RequestParam String modelo,
+                                   @RequestParam int anio,
+                                   RedirectAttributes redirectAttributes)
+    {
+        // Acceso a los automoviles
+        AutomovilesJDBC automovilesJDBC = new AutomovilesJDBC();
+        automovilesJDBC.setDataSource(DatabaseSource.getDataSource());
+        // Verificar si existe el automovil
+        if (!automovilesJDBC.existeAutomovil(modelo, anio)) {
+            redirectAttributes.addFlashAttribute("errors", new String[]{"No existe dicho automovil"});
+            return "redirect:/partes/" + id;
+        }
+        // Verificar si ya existe la asociacion
+        if (automovilesJDBC.existeAsociacion(id, modelo, anio)) {
+            redirectAttributes.addFlashAttribute("errors", new String[]{"Esta asociacion ya existe"});
+            return "redirect:/partes/" + id;
+        }
+        // Asociar el automovil
+        automovilesJDBC.asociarAutomovil(id, modelo, anio);
+        redirectAttributes.addFlashAttribute("success_msg", "Automovil asociado");
+        return "redirect:/partes/" + id;
+    }
+ 
 
     /**
      * Carga la plantilla para añadir partes
@@ -102,7 +149,6 @@ public class PartesController
         partesJDBC.setDataSource(DatabaseSource.getDataSource());
         int idM=partesJDBC.getIDMarcasP(parte.getMarca());
         int idF=partesJDBC.getIDFabricantesP(parte.getFabricante());
-        System.out.println(idM);
         partesJDBC.agregarParte(parte,idM,idF);
         redirectAttributes.addFlashAttribute("success_msg", "Parte agregada");
         return "redirect:/partes";

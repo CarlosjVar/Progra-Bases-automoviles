@@ -44,8 +44,6 @@ public class PartesJDBC implements PartesDAO {
     }
 
     /**
-
-
      * Obtiene una parte de acuerdo al id
      * @param id El id de la parte
      * @return La parte segun el id
@@ -59,10 +57,21 @@ public class PartesJDBC implements PartesDAO {
         return parte;
     }
 
-
+    /**
+     * Obtiene partes de acuerdo al modelo y al anio al automovil que estan asociados
+     * @param modelo El modelo del auto
+     * @param anio El anio del auto
+     * @return Las partes asociadas al modelo y el anio del auto
+     */
     @Override
     public List<Parte> getPartesByModeloAnio(String modelo, int anio) {
-        return null;
+        String query = "SELECT partes.id, partes.nombre, marcas_partes.nombre AS marca, fabricantes_partes.nombre AS fabricante FROM es_parte_de " +
+                        "INNER JOIN partes ON es_parte_de.parte_id = partes.id " +
+                        "INNER JOIN marcas_partes ON partes.marca_id = marcas_partes.id " +
+                        "INNER JOIN fabricantes_partes ON partes.fabricante_id = fabricantes_partes.id " +
+                        "WHERE es_parte_de.auto_modelo = ? AND es_parte_de.auto_anio = ?";
+        List<Parte> partes = jdbcTemplateObject.query(query, new Object[]{modelo, anio}, new PartesMapper());
+        return  partes;
     }
 
     /**
