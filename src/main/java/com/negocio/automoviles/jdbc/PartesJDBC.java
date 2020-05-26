@@ -170,7 +170,11 @@ public class PartesJDBC implements PartesDAO {
         return  ID;
     }
 
-
+    @Override
+    public void deleteParte(int id) {
+        String query="DELETE FROM partes WHERE id = ? ";
+        jdbcTemplateObject.update(query,new Object[]{id});
+    }
 
 
 }

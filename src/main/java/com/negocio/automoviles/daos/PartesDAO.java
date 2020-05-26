@@ -21,6 +21,7 @@ public interface PartesDAO {
     public boolean existeParte(String nombre);
     public void relacionParteProvedor(HolderPartProvedor info,int parteID,int provedorID);
     public int getIDParte(String nombreP);
+    public void deleteParte(int id);
 
 
 

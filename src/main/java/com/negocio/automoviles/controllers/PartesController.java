@@ -1,12 +1,10 @@
 package com.negocio.automoviles.controllers;
 import com.negocio.automoviles.database.DatabaseSource;
+import com.negocio.automoviles.jdbc.OrdenJDBC;
 import com.negocio.automoviles.jdbc.ParteProvedorJDBC;
 import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.jdbc.ProvedoresJDBC;
-import com.negocio.automoviles.models.HolderPartProvedor;
-import com.negocio.automoviles.models.Parte;
-import com.negocio.automoviles.models.ParteProvedor;
-import com.negocio.automoviles.models.Provedor;
+import com.negocio.automoviles.models.*;
 import com.negocio.automoviles.validators.ParteValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
@@ -188,7 +187,7 @@ public class PartesController
         model.addAttribute("relaciones",relaciones);
         return "editRelacion";
     }
-    @RequestMapping(value = "partes/joinEdit",method = RequestMethod.POST)
+    @RequestMapping(value = "/partes/joinEdit",method = RequestMethod.POST)
     public String procesarModificarRelacion(@ModelAttribute HolderPartProvedor holder, RedirectAttributes redirectAttributes)
     {
         ArrayList<String>errores= ParteValidator.validarRelacion(holder);
@@ -214,6 +213,24 @@ public class PartesController
 
         }
         redirectAttributes.addFlashAttribute("success_msg", "Afiliación modificada");
+        return "redirect:/partes";
+    }
+    @RequestMapping(value = "/partes/eliminar",method = RequestMethod.POST)
+    public String eliminarParte(@ModelAttribute Parte parte, RedirectAttributes redirectAttributes)
+    {
+        OrdenJDBC ordenJDBC= new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        PartesJDBC partesJDBC = new PartesJDBC();
+        partesJDBC.setDataSource(DatabaseSource.getDataSource());
+        int id= partesJDBC.getIDParte(parte.getNombre());
+        //Se comprueba que la parte no exista en una orden
+        if(ordenJDBC.Parte_en_orden(id))
+        {
+            redirectAttributes.addFlashAttribute("errors", new String[] {"Esta parte ya se encuentra listada en una orden"});
+            return  "redirect:/partes/"+id;
+        }
+        partesJDBC.deleteParte(id);
+        redirectAttributes.addFlashAttribute("success_msg", "Parte eliminada");
         return "redirect:/partes";
     }
 }
