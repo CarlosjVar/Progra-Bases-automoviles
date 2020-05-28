@@ -46,6 +46,7 @@ public class OrdenesController {
         if (fecha.equals("")) {
             errors.add("Por favor ingrese una fecha");
         }
+        // Revisar si hay errores
         if (errors.size() > 0) {
             redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/ordenes/add";
@@ -54,6 +55,10 @@ public class OrdenesController {
         OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
         ordenJDBC.crearOrdenNueva(idCliente, fecha);
+        // Activar cliente
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
+        clientJDBC.activarCliente(idCliente);
         redirectAttributes.addFlashAttribute("success_msg", "Orden creada");
         // TODO: Redirigir a la pagina principal de ordenes
         return "redirect:/";
