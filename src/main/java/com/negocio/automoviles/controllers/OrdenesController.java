@@ -2,6 +2,7 @@ package com.negocio.automoviles.controllers;
 
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.OrdenJDBC;
+import com.negocio.automoviles.models.Detalle;
 import com.negocio.automoviles.models.Orden;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,12 @@ public class OrdenesController {
     public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo, Model model)
     {
 
+        OrdenJDBC ordenJDBC= new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        Orden orden=ordenJDBC.getOrden(consecutivo);
+        List<Detalle> detalles=ordenJDBC.getDetalles(consecutivo);
+        model.addAttribute("orden",orden);
+        model.addAttribute("detalles",detalles);
         return "detallesOrden" ;
     }
 }

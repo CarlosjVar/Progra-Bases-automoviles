@@ -5,6 +5,26 @@ public class Detalle {
     private int ProveedorID;
     private int ParteID;
     private int ConsecutivoOrden;
+    private float precio;
+    private float porcentaje_ganancia;
+    private String nombre_parte;
+    private String nombre_provedor;
+
+    public String getNombre_provedor() { return nombre_provedor; }
+
+    public void setNombre_provedor(String nombre_provedor) { this.nombre_provedor = nombre_provedor; }
+
+    public String getNombre_parte() { return nombre_parte; }
+
+    public void setNombre_parte(String nombre_parte) { this.nombre_parte = nombre_parte; }
+
+    public float getPorcentaje_ganancia() { return porcentaje_ganancia; }
+
+    public void setPorcentaje_ganancia(float porcentaje_ganancia) { this.porcentaje_ganancia = porcentaje_ganancia; }
+
+    public float getPrecio() { return precio; }
+
+    public void setPrecio(float precio) { this.precio = precio; }
 
     public int getCantidad() {
         return cantidad;
