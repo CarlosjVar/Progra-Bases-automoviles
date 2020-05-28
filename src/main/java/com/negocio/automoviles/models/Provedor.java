@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Provedor {
-    public String nombre;
-    public String ciudad;
-    public String Dirección;
-    public List<String> telefonos;
-    public String nombre_contacto;
+    private String nombre;
+    private String ciudad;
+    private String Dirección;
+    private List<String> telefonos;
+    private String nombre_contacto;
 
     public String getNombre() {
         return nombre;
@@ -58,7 +58,7 @@ public class Provedor {
              )
         {
 
-            nombres.add(p.nombre);
+            nombres.add(p.getNombre());
 
         }
         return nombres;

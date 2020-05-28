@@ -1,10 +1,10 @@
 package com.negocio.automoviles.models;
 
 public class Detalle {
-    int cantidad;
-    int ProveedorID;
-    int ParteID;
-    int ConsecutivoOrden;
+    private int cantidad;
+    private int ProveedorID;
+    private int ParteID;
+    private int ConsecutivoOrden;
 
     public int getCantidad() {
         return cantidad;

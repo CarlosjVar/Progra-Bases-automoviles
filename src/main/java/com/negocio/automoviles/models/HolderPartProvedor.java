@@ -4,17 +4,16 @@ import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.jdbc.ProvedoresJDBC;
 
-import javax.xml.ws.Holder;
 import java.util.List;
 
 public class HolderPartProvedor {
-    public String parte;
-    public String proveedor;
-    public float precio;
-    public float porcentaje_ganancia;
-    public int parteID;
-    public int provedorID;
-    public String relacion;
+    private String parte;
+    private String proveedor;
+    private float precio;
+    private float porcentaje_ganancia;
+    private int parteID;
+    private int provedorID;
+    private String relacion;
 
 
 
@@ -82,8 +81,8 @@ public class HolderPartProvedor {
         provedoresJDBC.setDataSource(DatabaseSource.getDataSource());
         for (HolderPartProvedor holder:relaciones
              ) {
-            Parte parte=partesJDBC.getParte(holder.parteID);
-            Provedor provedor=provedoresJDBC.getProvedor(holder.provedorID);
+            Parte parte=partesJDBC.getParte(holder.getParteID());
+            Provedor provedor=provedoresJDBC.getProvedor(holder.getProvedorID());
             holder.setParte(parte.getNombre());
             holder.setProveedor(provedor.getNombre());
         }

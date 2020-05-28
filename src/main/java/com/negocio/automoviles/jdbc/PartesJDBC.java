@@ -5,11 +5,9 @@ import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.mappers.*;
 import com.negocio.automoviles.models.HolderPartProvedor;
 import com.negocio.automoviles.models.Parte;
-import com.negocio.automoviles.models.ParteProvedor;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -163,7 +161,7 @@ public class PartesJDBC implements PartesDAO {
     @Override
     public void relacionParteProvedor(HolderPartProvedor info,int parteID,int provedorID) {
     String query="INSERT INTO proveido_por(parte_id,provedor_id,precio,porcentaje_ganancia) VALUES(?,?,?,?)";
-    jdbcTemplateObject.update(query,parteID,provedorID,info.precio,info.porcentaje_ganancia);
+    jdbcTemplateObject.update(query,parteID,provedorID, info.getPrecio(), info.getPorcentaje_ganancia());
     }
 
     /**

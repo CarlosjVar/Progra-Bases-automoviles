@@ -12,10 +12,10 @@ public class ParteProvedorIDMapper implements RowMapper<HolderPartProvedor> {
     @Override
     public HolderPartProvedor mapRow(ResultSet rs, int rowNum) throws SQLException {
         HolderPartProvedor holder= new HolderPartProvedor();
-        holder.parteID=rs.getInt("parte_id");
-        holder.provedorID=rs.getInt("provedor_id");
-        holder.precio=rs.getFloat("precio");
-        holder.porcentaje_ganancia=rs.getFloat("porcentaje_ganancia");
+        holder.setParteID(rs.getInt("parte_id"));
+        holder.setProvedorID(rs.getInt("provedor_id"));
+        holder.setPrecio(rs.getFloat("precio"));
+        holder.setPorcentaje_ganancia(rs.getFloat("porcentaje_ganancia"));
         return holder;
     }
 }

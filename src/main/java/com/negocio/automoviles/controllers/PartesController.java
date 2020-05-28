@@ -12,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import javax.sql.DataSource;
-import javax.xml.crypto.Data;
-import java.sql.SQLOutput;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,8 +197,8 @@ public class PartesController
         provedoresJDBC.setDataSource(DatabaseSource.getDataSource());
         ParteProvedorJDBC parteProvedorJDBC= new ParteProvedorJDBC();
         parteProvedorJDBC.setDataSource(DatabaseSource.getDataSource());
-        int idParte= partesJDBC.getIDParte(holder.parte);
-        int idProvedor= provedoresJDBC.getIDProvedor(holder.proveedor);
+        int idParte= partesJDBC.getIDParte(holder.getParte());
+        int idProvedor= provedoresJDBC.getIDProvedor(holder.getProveedor());
         if(parteProvedorJDBC.existeRelacion(idParte,idProvedor))
         {
             errores.add("Esa relación ya existe");
@@ -243,7 +241,7 @@ public class PartesController
             redirectAttributes.addFlashAttribute("holder", holder);
             return "redirect:/partes/joinEdit";
         }
-        String [] parte_provedor= holder.relacion.split("-");
+        String [] parte_provedor= holder.getRelacion().split("-");
         ParteProvedorJDBC parteProvedorJDBC= new ParteProvedorJDBC();
         parteProvedorJDBC.setDataSource(DatabaseSource.getDataSource());
         List<HolderPartProvedor> relaciones =parteProvedorJDBC.getRelaciones();
@@ -251,10 +249,10 @@ public class PartesController
         for (HolderPartProvedor relacion:relaciones
              ) {
 
-            if(relacion.parte.equals(parte_provedor[0])&&relacion.proveedor.equals(parte_provedor[1]))
+            if(relacion.getParte().equals(parte_provedor[0])&& relacion.getProveedor().equals(parte_provedor[1]))
             {
 
-                parteProvedorJDBC.modificarRelacion(relacion.parteID,relacion.provedorID,holder.precio,holder.porcentaje_ganancia);
+                parteProvedorJDBC.modificarRelacion(relacion.getParteID(), relacion.getProvedorID(), holder.getPrecio(), holder.getPorcentaje_ganancia());
             }
 
         }
