@@ -18,13 +18,14 @@
             <div class="card card-body bg-light">
                 <h4><i class="fa fa-archive"></i> Agregar Orden</h4>
                 <p>Todos los campos son requeridos</p>
-                <form action="#" method="post">
+                <form action="#" th:action="@{/ordenes/add}" method="post">
                     <div class="form-group">
-
+                        <label for="cedulaOrden">Cedula del cliente:</label>
+                        <input type="number" name="cedula" class="form-control" placeholder="Cedula..." id="cedulaOrden" required>
                     </div>
                     <div class="form-group">
-                        <label for="birthday">Fecha:</label>
-                        <input type="date" class="form-control" id="birthday" name="birthday">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha">
                     </div>
                     <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Agregar Orden</button>
                 </form>
