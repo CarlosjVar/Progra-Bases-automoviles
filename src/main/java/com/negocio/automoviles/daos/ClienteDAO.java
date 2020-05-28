@@ -10,7 +10,7 @@ public interface ClienteDAO {
     public void modificarCliente(int id, String nombre, String direccion, String ciudad, String estado);
     public void suspenderCliente(int id);
     public void activarCliente(int id);
-    public List<Cliente> getClientesActivos();
+//    public List<Cliente> getClientesActivos();
     public List<String> getEstados();
 }
 

@@ -102,27 +102,27 @@ public class ClientJDBC implements ClienteDAO {
      * Obtiene todos los clientes activos
      * @return La lista de clientes activos
      */
-    @Override
-    public List<Cliente> getClientesActivos() {
-        // Obtener personas
-        String queryPersonas = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-                "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente WHERE NOT estado = 'SUSPENDIDO'";
-        List<Persona> personas = jdbcTemplateObject.query(queryPersonas, new PersonaMapper());
-        // Obtener organizaciones
-        String queryOrganizaciones = "SELECT clientes.nombre, organizaciones.cedula_juridica, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-                ",organizaciones.encargado_nombre,organizaciones.encargado_telefono,organizaciones.encargado_cargo "
-                +
-                "FROM clientes INNER JOIN organizaciones ON clientes.id = organizaciones.surrogate_key";
-        List<Organizacion> organizacions = jdbcTemplateObject.query(queryOrganizaciones, new OrganizacionMapper());
-        List<Cliente> clientesActivos = new ArrayList<>();
-        // Agregar personas
-        for (Persona persona: personas) {
-            clientesActivos.add(persona);
-        }
-        // Agregar organizaciones
-        for (Organizacion organizacion : organizacions) {
-            clientesActivos.add(organizacion);
-        }
-        return clientesActivos;
-    }
+//    @Override
+//    public List<Cliente> getClientesActivos() {
+//        // Obtener personas
+//        String queryPersonas = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
+//                "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente WHERE NOT estado = 'SUSPENDIDO'";
+//        List<Persona> personas = jdbcTemplateObject.query(queryPersonas, new PersonaMapper());
+//        // Obtener organizaciones
+//        String queryOrganizaciones = "SELECT clientes.nombre, organizaciones.cedula_juridica, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
+//                ",organizaciones.encargado_nombre,organizaciones.encargado_telefono,organizaciones.encargado_cargo "
+//                +
+//                "FROM clientes INNER JOIN organizaciones ON clientes.id = organizaciones.surrogate_key";
+//        List<Organizacion> organizacions = jdbcTemplateObject.query(queryOrganizaciones, new OrganizacionMapper());
+//        List<Cliente> clientesActivos = new ArrayList<>();
+//        // Agregar personas
+//        for (Persona persona: personas) {
+//            clientesActivos.add(persona);
+//        }
+//        // Agregar organizaciones
+//        for (Organizacion organizacion : organizacions) {
+//            clientesActivos.add(organizacion);
+//        }
+//        return clientesActivos;
+//    }
 }
