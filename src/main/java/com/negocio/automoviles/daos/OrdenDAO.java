@@ -13,4 +13,6 @@ public interface OrdenDAO {
     public List<Orden> getOrdenes();
     public Orden getOrden(int consecutivo);
     public List<Detalle> getDetalles(int consecutivo);
+    public void crearOrdenNueva(int idCliente, String fecha);
+
 }

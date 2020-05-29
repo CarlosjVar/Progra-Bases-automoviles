@@ -26,8 +26,6 @@ public class Orden {
     public int getConsecutivo() {
         return consecutivo;
     }
-
-
     public String getFecha() {
         return fecha;
     }
