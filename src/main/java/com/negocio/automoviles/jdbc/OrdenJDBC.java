@@ -11,6 +11,7 @@ import java.util.List;
 public class OrdenJDBC implements OrdenDAO {
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplateObject;
+
     @Override
     public void setDataSource(DataSource ds) {
         this.dataSource=ds;
@@ -22,8 +23,12 @@ public class OrdenJDBC implements OrdenDAO {
         String query="SELECT parte_id,provedor_id,cantidad,consecutivo_orden FROM detalles" +
                 " WHERE parte_id = ? ";
         List<Detalle> detalles=jdbcTemplateObject.query(query,new Object[]{id},new DetallesMapper());
-
-
         return detalles.size()>0;
+    }
+
+    @Override
+    public void crearOrdenNueva(int idCliente, String fecha) {
+        String query = "INSERT INTO ordenes(cliente_id, monto_total, fecha) VALUES(?, ?, ?)";
+        jdbcTemplateObject.update(query, new Object[]{idCliente, 0, fecha});
     }
 }
