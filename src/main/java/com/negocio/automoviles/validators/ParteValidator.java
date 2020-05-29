@@ -23,11 +23,11 @@ public class ParteValidator {
     }
     public static ArrayList<String> validarRelacion (HolderPartProvedor holder){
         ArrayList<String> errores = new ArrayList<String>();
-        if(holder.precio<=0f || holder.precio>2147483647f)
+        if(holder.getPrecio() <=0f || holder.getPrecio() >2147483647f)
         {
             errores.add("Precio inválido");
         }
-        if(holder.porcentaje_ganancia<=0f || holder.porcentaje_ganancia>999.99f)
+        if(holder.getPorcentaje_ganancia() <=0f || holder.getPorcentaje_ganancia() >999.99f)
         {
             errores.add("Porcentaje de ganancia inválido");
         }

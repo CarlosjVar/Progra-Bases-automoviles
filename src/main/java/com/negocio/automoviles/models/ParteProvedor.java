@@ -1,10 +1,10 @@
 package com.negocio.automoviles.models;
 
 public class ParteProvedor {
-    int parteID;
-    int provedorID;
-    float precio;
-    float porcentaje_ganancia;
+    private int parteID;
+    private int provedorID;
+    private float precio;
+    private float porcentaje_ganancia;
 
     public int getParteID() {
         return parteID;

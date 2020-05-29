@@ -61,6 +61,32 @@ public class OrdenesController {
         clientJDBC.activarCliente(idCliente);
         redirectAttributes.addFlashAttribute("success_msg", "Orden creada");
         // TODO: Redirigir a la pagina principal de ordenes
-        return "redirect:/";
+        return "redirect:/";    
+
     }
+      /**
+     * Carga la página de ordenes
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/ordenes",method = RequestMethod.GET)
+    public String ordenes(Model model)
+    {
+        OrdenJDBC ordenJDBC= new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        List<Orden> ordenes= ordenJDBC.getOrdenes();
+        model.addAttribute("ordenes",ordenes);
+        return "ordenes";
+    }
+    @RequestMapping(value= "/ordenes/{consecutivo}",method = RequestMethod.GET)
+    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo, Model model)
+    {
+
+        OrdenJDBC ordenJDBC= new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        Orden orden=ordenJDBC.getOrden(consecutivo);
+        List<Detalle> detalles=ordenJDBC.getDetalles(consecutivo);
+        model.addAttribute("orden",orden);
+        model.addAttribute("detalles",detalles);
+        return "detallesOrden" ;
 }

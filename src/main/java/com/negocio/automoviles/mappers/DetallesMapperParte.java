@@ -6,7 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DetallesMapper implements RowMapper<Detalle> {
+public class DetallesMapperParte implements RowMapper<Detalle> {
+
     @Override
     public Detalle mapRow(ResultSet rs, int rowNum) throws SQLException {
         Detalle detalle= new Detalle();
@@ -14,7 +15,10 @@ public class DetallesMapper implements RowMapper<Detalle> {
         detalle.setProveedorID(rs.getInt("provedor_id"));
         detalle.setCantidad(rs.getInt("cantidad"));
         detalle.setConsecutivoOrden(rs.getInt("consecutivo_orden"));
-        detalle.setPrecio(rs.getFloat("precio"));
+        detalle.setPorcentaje_ganancia(rs.getFloat("porcentaje_ganancia"));
+        detalle.setNombre_parte("parte.nombre");
+        detalle.setNombre_provedor("provedor.id");
+
         return detalle;
     }
 }
