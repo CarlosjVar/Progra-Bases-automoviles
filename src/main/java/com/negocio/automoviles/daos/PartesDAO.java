@@ -1,5 +1,6 @@
 package com.negocio.automoviles.daos;
 
+import com.negocio.automoviles.models.Detalle;
 import com.negocio.automoviles.models.HolderPartProvedor;
 import com.negocio.automoviles.models.Parte;
 import javax.sql.DataSource;
@@ -22,7 +23,5 @@ public interface PartesDAO {
     public void relacionParteProvedor(HolderPartProvedor info,int parteID,int provedorID);
     public int getIDParte(String nombreP);
     public void deleteParte(int id);
-
-
-
+    public List<Detalle> getPartesAsociadasPorNombre(String nombre);
 }

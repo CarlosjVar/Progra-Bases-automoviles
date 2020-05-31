@@ -3,16 +3,17 @@ package com.negocio.automoviles.controllers;
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.ClientJDBC;
 import com.negocio.automoviles.jdbc.OrdenJDBC;
+import com.negocio.automoviles.jdbc.PartesJDBC;
+import com.negocio.automoviles.models.Parte;
 import com.negocio.automoviles.validators.OrdenValidator;
+import com.negocio.automoviles.models.Orden;
+import com.negocio.automoviles.models.Detalle;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controlador para ordenes
@@ -78,15 +79,27 @@ public class OrdenesController {
         model.addAttribute("ordenes",ordenes);
         return "ordenes";
     }
-    @RequestMapping(value= "/ordenes/{consecutivo}",method = RequestMethod.GET)
-    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo, Model model)
-    {
 
-        OrdenJDBC ordenJDBC= new OrdenJDBC();
+    @RequestMapping(value= "/ordenes/{consecutivo}",method = RequestMethod.GET)
+    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo,
+                                @RequestParam(value = "nombre_parte", required = false) String nombreParte,
+                                Model model) {
+        PartesJDBC partesJDBC = new PartesJDBC();
+        partesJDBC.setDataSource(DatabaseSource.getDataSource());
+        // Revisar si se estan buscando proveedores
+        List<Detalle> afiliaciones = new ArrayList<>();
+        if (nombreParte != null) {
+            afiliaciones = partesJDBC.getPartesAsociadasPorNombre(nombreParte);
+        }
+        OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
-        Orden orden=ordenJDBC.getOrden(consecutivo);
-        List<Detalle> detalles=ordenJDBC.getDetalles(consecutivo);
-        model.addAttribute("orden",orden);
-        model.addAttribute("detalles",detalles);
-        return "detallesOrden" ;
+        Orden orden = ordenJDBC.getOrden(consecutivo);
+        List<Detalle> detalles = ordenJDBC.getDetalles(consecutivo);
+        model.addAttribute("orden", orden);
+        model.addAttribute("detalles", detalles);
+        if (!model.containsAttribute("afiliaciones")) {
+            model.addAttribute("afiliaciones", afiliaciones);
+        }
+        return "detallesOrden";
+    }
 }

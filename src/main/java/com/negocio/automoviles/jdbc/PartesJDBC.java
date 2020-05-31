@@ -3,6 +3,7 @@ package com.negocio.automoviles.jdbc;
 import com.negocio.automoviles.daos.PartesDAO;
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.mappers.*;
+import com.negocio.automoviles.models.Detalle;
 import com.negocio.automoviles.models.HolderPartProvedor;
 import com.negocio.automoviles.models.Parte;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -183,5 +184,19 @@ public class PartesJDBC implements PartesDAO {
         jdbcTemplateObject.update(query,new Object[]{id});
     }
 
-
+    /**
+     * Obtiene las proveedores asociados al nombre de la parte
+     * @param nombre El nombre de la parte
+     * @return Las partes asociadas
+     */
+    @Override
+    public List<Detalle> getPartesAsociadasPorNombre(String nombre) {
+        String query = "SELECT proveido_por.parte_id, proveido_por.provedor_id, proveido_por.precio, proveido_por.porcentaje_ganancia, " +
+                        "partes.nombre AS parte_nombre, provedores.nombre AS provedor_nombre " +
+                        "FROM proveido_por " +
+                        "INNER JOIN partes ON partes.id = proveido_por.parte_id " +
+                        "INNER JOIN provedores ON provedores.id = proveido_por.provedor_id " +
+                        "WHERE partes.nombre = ?";
+        return jdbcTemplateObject.query(query, new Object[] {nombre}, new AfiliacionMapper());
+    }
 }
