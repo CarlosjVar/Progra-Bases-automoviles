@@ -15,10 +15,9 @@ public class DetallesMapperParte implements RowMapper<Detalle> {
         detalle.setProveedorID(rs.getInt("provedor_id"));
         detalle.setCantidad(rs.getInt("cantidad"));
         detalle.setConsecutivoOrden(rs.getInt("consecutivo_orden"));
-        detalle.setPorcentaje_ganancia(rs.getFloat("porcentaje_ganancia"));
-        detalle.setNombre_parte("parte.nombre");
-        detalle.setNombre_provedor("provedor.id");
-
+        detalle.setPorcentaje_ganancia(rs.getDouble("porcentaje_ganancia"));
+        detalle.setNombre_parte(rs.getString("parte_nombre"));
+        detalle.setNombre_provedor(rs.getString("provedor_nombre"));
         return detalle;
     }
 }
