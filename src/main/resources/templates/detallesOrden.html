@@ -41,7 +41,7 @@
                 <tr th:each="detalle: ${detalles}">
                     <td th:text="${detalle.getNombre_parte()}"></td>
                     <td th:text="${detalle.getNombre_provedor()}"></td>
-                    <td th:text="${detalle.precio + detalle.precio*(detalle.porcentaje_ganancia/10)}"></td>
+                    <td th:text="${detalle.precio + (detalle.precio*(detalle.porcentaje_ganancia/100))}"></td>
                     <td th:text="${detalle.cantidad}"></td>
                 </tr>
             </table>

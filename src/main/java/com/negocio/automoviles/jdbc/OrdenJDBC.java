@@ -1,6 +1,7 @@
 package com.negocio.automoviles.jdbc;
 
 import com.negocio.automoviles.daos.OrdenDAO;
+import com.negocio.automoviles.mappers.DetallesMapper;
 import com.negocio.automoviles.mappers.DetallesMapperParte;
 import com.negocio.automoviles.mappers.OrdenMapper;
 import com.negocio.automoviles.models.Detalle;
@@ -53,13 +54,13 @@ public class OrdenJDBC implements OrdenDAO {
 
     @Override
     public List<Detalle> getDetalles(int consecutivo) {
-        String query="SELECT detalles.parte_id,proveido_por.parte_id,detalles.provedor_id,cantidad,consecutivo_orden, " +
-                " proveido_por.precio, proveido_por.porcentaje_ganancia, provedores.id, " +
-                "partes.nombre, partes.id,provedores.nombre FROM detalles " +
+        String query="SELECT detalles.parte_id,proveido_por.parte_id,detalles.provedor_id,cantidad,detalles.consecutivo_orden, " +
+                "proveido_por.precio, proveido_por.porcentaje_ganancia, provedores.id, " +
+                "partes.nombre AS pnombre , partes.id,provedores.nombre AS prnombre FROM detalles " +
                 "INNER JOIN proveido_por on proveido_por.parte_id = detalles.parte_id " +
                 "INNER JOIN partes on detalles.parte_id = partes.id " +
                 "INNER JOIN provedores on detalles.provedor_id = provedores.id " +
-                " WHERE consecutivo_orden = ? ";
+                "WHERE detalles.consecutivo_orden = ? ";
         List<Detalle> detalles=jdbcTemplateObject.query(query,new Object[]{consecutivo},new DetallesMapperParte());
 
         return detalles;
@@ -71,4 +72,36 @@ public class OrdenJDBC implements OrdenDAO {
         String query = "INSERT INTO ordenes(cliente_id, monto_total, fecha) VALUES(?, ?, ?)";
         jdbcTemplateObject.update(query, new Object[]{idCliente, 0, fecha});
     }
+    public boolean  existeDetalle(int parteid,int provedorid)
+    {
+        String query ="SELECT detalles.parte_id , detalles.provedor_id,  +FROM detalles"+
+                " WHERE detalles.parte_id = ? AND detalles.provedor_id = ? ";
+        List<Detalle> detalles=jdbcTemplateObject.query(query,new Object[]{parteid,provedorid},new DetallesMapper());
+        return detalles.size()>0;
+    }
+
+    @Override
+    public void addCantidad(int parteid, int provedorid, int cantidad) {
+        String query = "SELECT detalles.parte_id, detalles.provedor_id , detalles.cantidad , detalles.consecutivo_orden" +
+                " FROM detalles WHERE detalles.parte_id = ? AND detalles.provedor_id = ?";
+
+        Detalle detalle=jdbcTemplateObject.queryForObject(query,new Object[]{parteid,provedorid},new DetallesMapperParte());
+
+        detalle.setCantidad(detalle.getCantidad()+cantidad);
+        query= "UPDATE detalles SET cantidad = ? WHERE detalles.parte_id = ? AND detalles.provedor_id = ?";
+        jdbcTemplateObject.update(query,new Object[]{detalle.getCantidad(),detalle.getParteID(),detalle.getProveedorID()});
+
+    }
+
+    @Override
+    public void agregarDetalle(Detalle detalle,int consecutivo) {
+        List<Detalle> detalles= this.getDetalles(consecutivo);
+        String query= "INSERT INTO detalles(detalles.consecutivo_orden,detalles.numero_linea,detalles.cantidad,detalles.parte_id,detalles.provedor_id)" +
+                " VALUES(?, ?, ?, ?, ?) ";
+        jdbcTemplateObject.update(query,new Object[]{consecutivo,detalles.size(),detalle.getCantidad(),detalle.getParteID(),detalle.getParteID()});
+
+
+    }
+
+
 }

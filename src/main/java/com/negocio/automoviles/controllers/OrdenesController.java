@@ -3,16 +3,19 @@ package com.negocio.automoviles.controllers;
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.ClientJDBC;
 import com.negocio.automoviles.jdbc.OrdenJDBC;
+import com.negocio.automoviles.models.Detalle;
+import com.negocio.automoviles.models.Orden;
+import com.negocio.automoviles.models.Organizacion;
 import com.negocio.automoviles.validators.OrdenValidator;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controlador para ordenes
@@ -79,14 +82,37 @@ public class OrdenesController {
         return "ordenes";
     }
     @RequestMapping(value= "/ordenes/{consecutivo}",method = RequestMethod.GET)
-    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo, Model model)
-    {
+    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo, Model model) {
 
-        OrdenJDBC ordenJDBC= new OrdenJDBC();
+        OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
-        Orden orden=ordenJDBC.getOrden(consecutivo);
-        List<Detalle> detalles=ordenJDBC.getDetalles(consecutivo);
-        model.addAttribute("orden",orden);
-        model.addAttribute("detalles",detalles);
-        return "detallesOrden" ;
+        Orden orden = ordenJDBC.getOrden(consecutivo);
+        List<Detalle> detalles = ordenJDBC.getDetalles(consecutivo);
+        model.addAttribute("orden", orden);
+        model.addAttribute("detalles", detalles);
+        return "detallesOrden";
+    }
+
+    @RequestMapping(value= "ordenes/{id}/detalles/add",method = RequestMethod.POST)
+    public String procesarDetalle(@PathVariable(value = "consecutivo")int consecutivo ,@RequestParam(value="cantidad") int cantidad,@RequestParam(value="parte_id") int parteid,@RequestParam(value="provedor_id") int provedorid,RedirectAttributes redirectAttributes)
+    {
+        OrdenJDBC ordenJDBC = new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        Detalle detalle= new Detalle();
+        detalle.setCantidad(cantidad);
+        detalle.setParteID(parteid);
+        detalle.setProveedorID(provedorid);
+        if(ordenJDBC.existeDetalle(detalle.getParteID(),detalle.getProveedorID()))
+        {
+            ordenJDBC.addCantidad(detalle.getParteID(),detalle.getProveedorID(),detalle.getCantidad());
+        }
+        else
+        {
+            ordenJDBC.agregarDetalle(detalle, consecutivo);
+        }
+        redirectAttributes.addFlashAttribute("success_msg", "Detalle agregado");
+
+        return "redirect:/ordenes/"+consecutivo;
+    }
+
 }
