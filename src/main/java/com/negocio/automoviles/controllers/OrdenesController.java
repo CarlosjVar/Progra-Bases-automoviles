@@ -8,12 +8,15 @@ import com.negocio.automoviles.models.Orden;
 import com.negocio.automoviles.models.Organizacion;
 import com.negocio.automoviles.validators.OrdenValidator;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import com.negocio.automoviles.jdbc.PartesJDBC;
+import com.negocio.automoviles.models.Parte;
+import com.negocio.automoviles.validators.OrdenValidator;
+import com.negocio.automoviles.models.Orden;
+import com.negocio.automoviles.models.Detalle;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +84,18 @@ public class OrdenesController {
         model.addAttribute("ordenes",ordenes);
         return "ordenes";
     }
+
     @RequestMapping(value= "/ordenes/{consecutivo}",method = RequestMethod.GET)
-    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo, Model model) {
+    public String detallesOrden(@PathVariable(value = "consecutivo") int consecutivo,
+                                @RequestParam(value = "nombre_parte", required = false) String nombreParte,
+                                Model model) {
+        PartesJDBC partesJDBC = new PartesJDBC();
+        partesJDBC.setDataSource(DatabaseSource.getDataSource());
+        // Revisar si se estan buscando proveedores
+        List<Detalle> afiliaciones = new ArrayList<>();
+        if (nombreParte != null) {
+            afiliaciones = partesJDBC.getPartesAsociadasPorNombre(nombreParte);
+        }
 
         OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
@@ -90,6 +103,9 @@ public class OrdenesController {
         List<Detalle> detalles = ordenJDBC.getDetalles(consecutivo);
         model.addAttribute("orden", orden);
         model.addAttribute("detalles", detalles);
+      if (!model.containsAttribute("afiliaciones")) {
+            model.addAttribute("afiliaciones", afiliaciones);
+        }
         return "detallesOrden";
     }
 
@@ -114,5 +130,4 @@ public class OrdenesController {
 
         return "redirect:/ordenes/"+consecutivo;
     }
-
 }

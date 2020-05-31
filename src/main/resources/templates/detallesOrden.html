@@ -13,25 +13,17 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h2> <i class="fa fa-file-text" ></i></i> Detalles orden</h2>
-    <hr>
     <div class="row">
-        <div class="col-md-9">
-            <h4>Orden</h4>
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                <th>Consecutivo</th>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Total</th>
-                </thead>
-                <tbody>
-                <td th:text="${orden.getConsecutivo()}"></td>
-                <td th:text="${orden.getFecha()}"></td>
-                <td th:text="${orden.getNombreCliente()}"></td>
-                <td th:text="${orden.getTotal()}"></td>
-                </tbody>
-            </table>
+        <div class="col-md-6">
+            <h2 class="mb-4"> <i class="fa fa-file-text" ></i></i> Orden: #<span th:text="${orden.getConsecutivo()}"></span></h2>
+        </div>
+        <div class="col-md-6">
+            <a th:href="@{~/ordenes}" class="btn btn-light mb-3 float-right"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Volver</a>
+        </div>
+    </div>
+    <p><i class="fa fa-user"></i> Cliente: <span th:text="${orden.getNombreCliente()}"></span></p>
+    <div class="row">
+        <div class="col-md-8">
             <table class="table table-striped">
                 <thead class="thead-dark">
                 <th>Producto</th>
@@ -46,7 +38,25 @@
                 </tr>
             </table>
         </div>
-
+        <div class="col-md-4">
+            <form action="#" th:action="@{'/ordenes/' + ${orden.getConsecutivo()}}" method="get">
+                <input type="text" name="nombre_parte" placeholder="Buscar parte..." class="form-control mb-3">
+                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+            </form>
+            <div th:if="${afiliaciones.size()} > 0">
+                <div th:each="afiliacion : ${afiliaciones}" class="card card-body my-3">
+                    <h5 th:text="${afiliacion.getNombre_provedor()}"></h5>
+                    <p><strong>Precio: </strong> <span th:text="${afiliacion.getPrecio()}"></span></p>
+                    <p><strong>Porcentaje ganancia: </strong> <span th:text="${afiliacion.getPorcentaje_ganancia()}"></span></p>
+                    <form action="#" th:action="@{'/ordenes/' + ${orden.getConsecutivo()} + '/detalles/add'}" method="post">
+                        <input type="number" class="form-control" name="cantidad" min="1" value="1" required>
+                        <input type="hidden" name="parte_id" th:value="${afiliacion.getParteID()}">
+                        <input type="hidden" name="provedor_id" th:value="${afiliacion.getProveedorID()}">
+                        <button type="submit" class="btn btn-success btn-block mt-3">Agregar parte</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 </body>

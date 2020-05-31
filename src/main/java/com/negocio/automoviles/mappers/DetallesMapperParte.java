@@ -19,7 +19,6 @@ public class DetallesMapperParte implements RowMapper<Detalle> {
         detalle.setPorcentaje_ganancia(rs.getDouble("porcentaje_ganancia"));
         detalle.setNombre_parte(rs.getString("pnombre"));
         detalle.setNombre_provedor(rs.getString("prnombre"));
-
         return detalle;
     }
 }

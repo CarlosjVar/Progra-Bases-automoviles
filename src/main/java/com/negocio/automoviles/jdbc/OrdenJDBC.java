@@ -57,14 +57,13 @@ public class OrdenJDBC implements OrdenDAO {
         String query="SELECT detalles.parte_id,proveido_por.parte_id,detalles.provedor_id,cantidad,detalles.consecutivo_orden, " +
                 "proveido_por.precio, proveido_por.porcentaje_ganancia, provedores.id, " +
                 "partes.nombre AS pnombre , partes.id,provedores.nombre AS prnombre FROM detalles " +
+
                 "INNER JOIN proveido_por on proveido_por.parte_id = detalles.parte_id " +
                 "INNER JOIN partes on detalles.parte_id = partes.id " +
                 "INNER JOIN provedores on detalles.provedor_id = provedores.id " +
                 "WHERE detalles.consecutivo_orden = ? ";
         List<Detalle> detalles=jdbcTemplateObject.query(query,new Object[]{consecutivo},new DetallesMapperParte());
-
         return detalles;
-
     }
 
     @Override
