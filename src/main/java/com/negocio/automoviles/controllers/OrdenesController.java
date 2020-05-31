@@ -3,6 +3,11 @@ package com.negocio.automoviles.controllers;
 import com.negocio.automoviles.database.DatabaseSource;
 import com.negocio.automoviles.jdbc.ClientJDBC;
 import com.negocio.automoviles.jdbc.OrdenJDBC;
+import com.negocio.automoviles.models.Detalle;
+import com.negocio.automoviles.models.Orden;
+import com.negocio.automoviles.models.Organizacion;
+import com.negocio.automoviles.validators.OrdenValidator;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.models.Parte;
 import com.negocio.automoviles.validators.OrdenValidator;
@@ -91,15 +96,38 @@ public class OrdenesController {
         if (nombreParte != null) {
             afiliaciones = partesJDBC.getPartesAsociadasPorNombre(nombreParte);
         }
+
         OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
         Orden orden = ordenJDBC.getOrden(consecutivo);
         List<Detalle> detalles = ordenJDBC.getDetalles(consecutivo);
         model.addAttribute("orden", orden);
         model.addAttribute("detalles", detalles);
-        if (!model.containsAttribute("afiliaciones")) {
+      if (!model.containsAttribute("afiliaciones")) {
             model.addAttribute("afiliaciones", afiliaciones);
         }
         return "detallesOrden";
+    }
+
+    @RequestMapping(value= "ordenes/{id}/detalles/add",method = RequestMethod.POST)
+    public String procesarDetalle(@PathVariable(value = "consecutivo")int consecutivo ,@RequestParam(value="cantidad") int cantidad,@RequestParam(value="parte_id") int parteid,@RequestParam(value="provedor_id") int provedorid,RedirectAttributes redirectAttributes)
+    {
+        OrdenJDBC ordenJDBC = new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        Detalle detalle= new Detalle();
+        detalle.setCantidad(cantidad);
+        detalle.setParteID(parteid);
+        detalle.setProveedorID(provedorid);
+        if(ordenJDBC.existeDetalle(detalle.getParteID(),detalle.getProveedorID()))
+        {
+            ordenJDBC.addCantidad(detalle.getParteID(),detalle.getProveedorID(),detalle.getCantidad());
+        }
+        else
+        {
+            ordenJDBC.agregarDetalle(detalle, consecutivo);
+        }
+        redirectAttributes.addFlashAttribute("success_msg", "Detalle agregado");
+
+        return "redirect:/ordenes/"+consecutivo;
     }
 }
