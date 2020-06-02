@@ -7,7 +7,6 @@ import com.negocio.automoviles.models.Detalle;
 import com.negocio.automoviles.models.Orden;
 import com.negocio.automoviles.models.Organizacion;
 import com.negocio.automoviles.validators.OrdenValidator;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.negocio.automoviles.jdbc.PartesJDBC;
 import com.negocio.automoviles.models.Parte;
 import com.negocio.automoviles.validators.OrdenValidator;
@@ -25,6 +24,22 @@ import java.util.List;
  */
 @Controller
 public class OrdenesController {
+
+    /**
+     * Carga la página de ordenes
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/ordenes", method = RequestMethod.GET)
+    public String ordenes(Model model)
+    {
+        OrdenJDBC ordenJDBC= new OrdenJDBC();
+        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
+        List<Orden> ordenes= ordenJDBC.getOrdenes();
+        model.addAttribute("ordenes",ordenes);
+        return "ordenes";
+    }
+
     /**
      * Agregar una orde
      * @return Carga el formulario para agregar una orden
@@ -46,6 +61,7 @@ public class OrdenesController {
         ArrayList<String> errors = new ArrayList<String>();
         // Validar la cedula
         int idCliente = OrdenValidator.validarClienteCedula(cedula);
+        // TODO: Verificar que el cliente no este suspendido
         if (idCliente == -1) {
             errors.add("Ningun cliente posee esta cedula");
         }
@@ -67,22 +83,8 @@ public class OrdenesController {
         clientJDBC.activarCliente(idCliente);
         redirectAttributes.addFlashAttribute("success_msg", "Orden creada");
         // TODO: Redirigir a la pagina principal de ordenes
-        return "redirect:/";    
+        return "redirect:/ordenes";
 
-    }
-      /**
-     * Carga la página de ordenes
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/ordenes",method = RequestMethod.GET)
-    public String ordenes(Model model)
-    {
-        OrdenJDBC ordenJDBC= new OrdenJDBC();
-        ordenJDBC.setDataSource(DatabaseSource.getDataSource());
-        List<Orden> ordenes= ordenJDBC.getOrdenes();
-        model.addAttribute("ordenes",ordenes);
-        return "ordenes";
     }
 
     @RequestMapping(value= "/ordenes/{consecutivo}",method = RequestMethod.GET)
@@ -96,7 +98,6 @@ public class OrdenesController {
         if (nombreParte != null) {
             afiliaciones = partesJDBC.getPartesAsociadasPorNombre(nombreParte);
         }
-
         OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
         Orden orden = ordenJDBC.getOrden(consecutivo);

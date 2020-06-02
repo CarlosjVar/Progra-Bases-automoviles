@@ -21,7 +21,7 @@
                 <form action="#" th:action="@{/partes/joinEdit}" th:object="${holder}" method="post">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <label class="input-group-text">Estados:</label>
+                            <label class="input-group-text">Asociacion:</label>
                         </div>
                         <select th:field="*{relacion}" class="custom-select">
                             <option th:value="${texto.parte+'-'+texto.proveedor}" th:each="texto : ${relaciones}" th:text="${texto.parte+'-'+texto.proveedor}"></option>
