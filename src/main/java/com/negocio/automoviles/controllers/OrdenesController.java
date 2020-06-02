@@ -101,6 +101,17 @@ public class OrdenesController {
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
         Orden orden = ordenJDBC.getOrden(consecutivo);
         List<Detalle> detalles = ordenJDBC.getDetalles(consecutivo);
+        double total = 0;
+        for (Detalle detalle: detalles
+             ) {
+            total= total + (detalle.getPrecio()+(detalle.getPrecio()*(detalle.getPorcentaje_ganancia()/100)))*detalle.getCantidad();
+
+        }
+        if(total>0)
+        {
+            ordenJDBC.updateTotal(consecutivo,total);
+        }
+        model.addAttribute("total",total);
         model.addAttribute("orden", orden);
         model.addAttribute("detalles", detalles);
       if (!model.containsAttribute("afiliaciones")) {
@@ -109,7 +120,7 @@ public class OrdenesController {
         return "detallesOrden";
     }
 
-    @RequestMapping(value= "ordenes/{id}/detalles/add",method = RequestMethod.POST)
+    @RequestMapping(value= "ordenes/{consecutivo}/detalles/add",method = RequestMethod.POST)
     public String procesarDetalle(@PathVariable(value = "consecutivo")int consecutivo ,@RequestParam(value="cantidad") int cantidad,@RequestParam(value="parte_id") int parteid,@RequestParam(value="provedor_id") int provedorid,RedirectAttributes redirectAttributes)
     {
         OrdenJDBC ordenJDBC = new OrdenJDBC();
@@ -118,9 +129,9 @@ public class OrdenesController {
         detalle.setCantidad(cantidad);
         detalle.setParteID(parteid);
         detalle.setProveedorID(provedorid);
-        if(ordenJDBC.existeDetalle(detalle.getParteID(),detalle.getProveedorID()))
+        if(ordenJDBC.existeDetalle(detalle.getParteID(),detalle.getProveedorID(),consecutivo))
         {
-            ordenJDBC.addCantidad(detalle.getParteID(),detalle.getProveedorID(),detalle.getCantidad());
+            ordenJDBC.addCantidad(detalle.getParteID(),detalle.getProveedorID(),detalle.getCantidad(), consecutivo);
         }
         else
         {
