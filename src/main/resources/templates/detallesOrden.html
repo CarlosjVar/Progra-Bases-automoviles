@@ -36,6 +36,24 @@
                     <td th:text="${detalle.precio + (detalle.precio*(detalle.porcentaje_ganancia/100))}"></td>
                     <td th:text="${detalle.cantidad}"></td>
                 </tr>
+                <tr>
+                <td ></td>
+                <td ></td>
+                <td th:text="Subtotal"></td>
+                <td th:text="${total}"></td>
+                </tr>
+                <tr>
+                    <td ></td>
+                    <td ></td>
+                    <td th:text="Impuesto"></td>
+                    <td th:text="'13%'"></td>
+                </tr>
+                <tr>
+                    <td ></td>
+                    <td ></td>
+                    <td th:text="Total"></td>
+                    <td th:text="${total+(total*0.13)}"></td>
+                </tr>
             </table>
         </div>
         <div class="col-md-4">

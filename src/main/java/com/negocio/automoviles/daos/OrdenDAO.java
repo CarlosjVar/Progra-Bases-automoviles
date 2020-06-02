@@ -14,8 +14,9 @@ public interface OrdenDAO {
     public Orden getOrden(int consecutivo);
     public List<Detalle> getDetalles(int consecutivo);
     public void crearOrdenNueva(int idCliente, String fecha);
-    public boolean  existeDetalle(int parteid,int provedorid);
-    public void addCantidad(int parteid,int provedorid, int cantidad);
+    public boolean existeDetalle(int parteid,int provedorid, int consecutivo);
+    public void addCantidad(int parteid,int provedorid, int cantidad,  int consecutivo);
     public void agregarDetalle(Detalle detalle,int consecutivo);
+    public void updateTotal(int consecutivo, double total);
 
 }
