@@ -12,5 +12,6 @@ public interface ClienteDAO {
     public void activarCliente(int id);
 //    public List<Cliente> getClientesActivos();
     public List<String> getEstados();
+    public boolean verificarClienteSuspendido(int id);
 }
 

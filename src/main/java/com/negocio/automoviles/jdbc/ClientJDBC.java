@@ -1,6 +1,7 @@
 package com.negocio.automoviles.jdbc;
 
 import com.negocio.automoviles.daos.ClienteDAO;
+import com.negocio.automoviles.mappers.ClienteMapper;
 import com.negocio.automoviles.mappers.EstadoMapper;
 import com.negocio.automoviles.mappers.OrganizacionMapper;
 import com.negocio.automoviles.mappers.PersonaMapper;
@@ -99,30 +100,14 @@ public class ClientJDBC implements ClienteDAO {
     }
 
     /**
-     * Obtiene todos los clientes activos
-     * @return La lista de clientes activos
+     * Verifica si el cliente esta suspendido
+     * @param id El ID del cliente
+     * @return Si el cliente esta suspendido o no
      */
-//    @Override
-//    public List<Cliente> getClientesActivos() {
-//        // Obtener personas
-//        String queryPersonas = "SELECT clientes.nombre, personas.cedula, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-//                "FROM clientes INNER JOIN personas ON clientes.id = personas.id_cliente WHERE NOT estado = 'SUSPENDIDO'";
-//        List<Persona> personas = jdbcTemplateObject.query(queryPersonas, new PersonaMapper());
-//        // Obtener organizaciones
-//        String queryOrganizaciones = "SELECT clientes.nombre, organizaciones.cedula_juridica, clientes.estado, clientes.id, clientes.direccion, clientes.ciudad " +
-//                ",organizaciones.encargado_nombre,organizaciones.encargado_telefono,organizaciones.encargado_cargo "
-//                +
-//                "FROM clientes INNER JOIN organizaciones ON clientes.id = organizaciones.surrogate_key";
-//        List<Organizacion> organizacions = jdbcTemplateObject.query(queryOrganizaciones, new OrganizacionMapper());
-//        List<Cliente> clientesActivos = new ArrayList<>();
-//        // Agregar personas
-//        for (Persona persona: personas) {
-//            clientesActivos.add(persona);
-//        }
-//        // Agregar organizaciones
-//        for (Organizacion organizacion : organizacions) {
-//            clientesActivos.add(organizacion);
-//        }
-//        return clientesActivos;
-//    }
+    @Override
+    public boolean verificarClienteSuspendido(int id) {
+        String query = "SELECT clientes.id, clientes.estado, clientes.nombre, clientes.direccion, clientes.ciudad " +
+                        "FROM clientes WHERE clientes.estado = 'SUSPENDIDO' AND id = ?";
+        return jdbcTemplateObject.query(query, new Object[] {id}, new ClienteMapper()).size() > 0;
+    }
 }

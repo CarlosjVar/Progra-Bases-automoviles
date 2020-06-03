@@ -33,26 +33,26 @@
                 <tr th:each="detalle: ${detalles}">
                     <td th:text="${detalle.getNombre_parte()}"></td>
                     <td th:text="${detalle.getNombre_provedor()}"></td>
-                    <td th:text="${detalle.precio + (detalle.precio*(detalle.porcentaje_ganancia/100))}"></td>
+                    <td th:text="'₡ ' + ${detalle.precio + (detalle.precio*(detalle.porcentaje_ganancia/100))}"></td>
                     <td th:text="${detalle.cantidad}"></td>
                 </tr>
                 <tr>
-                <td ></td>
-                <td ></td>
-                <td th:text="Subtotal"></td>
-                <td th:text="${total}"></td>
+                    <td><strong>Subtotal </strong></td>
+                    <td th:text="'₡ ' + ${total}"></td>
+                    <td ></td>
+                    <td ></td>
                 </tr>
                 <tr>
-                    <td ></td>
-                    <td ></td>
-                    <td th:text="Impuesto"></td>
+                    <td><strong>Impuesto</strong></td>
                     <td th:text="'13%'"></td>
+                    <td ></td>
+                    <td ></td>
                 </tr>
                 <tr>
+                    <td><strong>Total</strong></td>
+                    <td th:text="'₡ ' + ${total+(total*0.13)}"></td>
                     <td ></td>
                     <td ></td>
-                    <td th:text="Total"></td>
-                    <td th:text="${total+(total*0.13)}"></td>
                 </tr>
             </table>
         </div>
@@ -67,7 +67,7 @@
                     <p><strong>Precio: </strong> <span th:text="${afiliacion.getPrecio()}"></span></p>
                     <p><strong>Porcentaje ganancia: </strong> <span th:text="${afiliacion.getPorcentaje_ganancia()}"></span></p>
                     <form action="#" th:action="@{'/ordenes/' + ${orden.getConsecutivo()} + '/detalles/add'}" method="post">
-                        <input type="number" class="form-control" name="cantidad" min="1" value="1" required>
+                        <input type="number" class="form-control" name="cantidad" min="1" step="1" value="1" required>
                         <input type="hidden" name="parte_id" th:value="${afiliacion.getParteID()}">
                         <input type="hidden" name="provedor_id" th:value="${afiliacion.getProveedorID()}">
                         <button type="submit" class="btn btn-success btn-block mt-3">Agregar parte</button>
