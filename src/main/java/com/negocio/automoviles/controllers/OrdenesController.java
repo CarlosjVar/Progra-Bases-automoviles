@@ -61,7 +61,8 @@ public class OrdenesController {
         ArrayList<String> errors = new ArrayList<String>();
         // Validar la cedula
         int idCliente = OrdenValidator.validarClienteCedula(cedula);
-        // TODO: Verificar que el cliente no este suspendido
+        ClientJDBC clientJDBC = new ClientJDBC();
+        clientJDBC.setDataSource(DatabaseSource.getDataSource());
         if (idCliente == -1) {
             errors.add("Ningun cliente posee esta cedula");
         }
@@ -73,13 +74,17 @@ public class OrdenesController {
             redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/ordenes/add";
         }
+        // Verificar si el cliente esta suspendido
+        if (clientJDBC.verificarClienteSuspendido(idCliente)) {
+            errors.add("Este cliente se encuentra suspendido");
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/ordenes/add";
+        }
         // Procesar la orden
         OrdenJDBC ordenJDBC = new OrdenJDBC();
         ordenJDBC.setDataSource(DatabaseSource.getDataSource());
         ordenJDBC.crearOrdenNueva(idCliente, fecha);
         // Activar cliente
-        ClientJDBC clientJDBC = new ClientJDBC();
-        clientJDBC.setDataSource(DatabaseSource.getDataSource());
         clientJDBC.activarCliente(idCliente);
         redirectAttributes.addFlashAttribute("success_msg", "Orden creada");
         // TODO: Redirigir a la pagina principal de ordenes
