@@ -14,7 +14,7 @@ public class OrdenMapper implements RowMapper<Orden> {
         orden.setConsecutivo(rs.getInt("consecutivo"));
         orden.setIdCliente(rs.getInt("cliente_id"));
         orden.setFecha(rs.getString("fecha"));
-        orden.setTotal(rs.getInt("monto_total"));
+        orden.setTotal(rs.getDouble("monto_total"));
         return orden;
     }
 }

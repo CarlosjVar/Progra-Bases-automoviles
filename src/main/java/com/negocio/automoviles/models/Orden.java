@@ -5,7 +5,7 @@ public class Orden {
     private String fecha;
     private int idCliente;
     private String nombreCliente;
-    private int total;
+    private double total;
 
     public String getNombreCliente() {
         return nombreCliente;
@@ -15,11 +15,11 @@ public class Orden {
         this.nombreCliente = nombreCliente;
     }
 
-    public int getTotal() {
+    public double getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(double total) {
         this.total = total;
     }
 

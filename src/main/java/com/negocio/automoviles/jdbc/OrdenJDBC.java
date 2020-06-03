@@ -24,10 +24,10 @@ public class OrdenJDBC implements OrdenDAO {
 
     @Override
     public boolean Parte_en_orden(int id) {
-        String query="SELECT parte_id,provedor_id,cantidad,consecutivo_orden FROM detalles" +
+        String query="SELECT parte_id, provedor_id FROM detalles" +
                 " WHERE parte_id = ? ";
 
-        List<Detalle> detalles=jdbcTemplateObject.query(query,new Object[]{id},new DetallesMapperParte());
+        List<Detalle> detalles=jdbcTemplateObject.query(query,new Object[]{id},new DetallesMapperSimple());
         return detalles.size()>0;
     }
 

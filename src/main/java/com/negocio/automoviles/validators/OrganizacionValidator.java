@@ -18,9 +18,7 @@ public class OrganizacionValidator {
         OrganizacionJDBC organizaJDBC = new OrganizacionJDBC();
         organizaJDBC.setDataSource(DatabaseSource.getDataSource());
         // Revisar cedula
-        //TODO: Que no admita menos de 9 digitos
         if (esClienteNuevo && (organizacion.getCedula() < 999999999 || organizacion.getCedula() > 10000000000L || organizaJDBC.existeCedula(organizacion.getCedula()))) {
-            System.out.println("Entro..");
             errores.add("Cedula invalida");
         }
         // Revisar nombre

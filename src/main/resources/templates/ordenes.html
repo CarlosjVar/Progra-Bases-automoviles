@@ -31,7 +31,7 @@
                     <td th:text="${orden.getConsecutivo()}"></td>
                     <td th:text="${orden.getFecha()}"></td>
                     <td th:text="${orden.getNombreCliente()}"></td>
-                    <td th:text="${orden.getTotal()}"></td>
+                    <td th:text="'₡ ' + ${orden.getTotal()}"></td>
                     <td><a th:href="'/ordenes/' + ${orden.getConsecutivo()}" class="btn btn-dark btn-block">Detalles</a></td>
                 </tr>
                 </tbody>
