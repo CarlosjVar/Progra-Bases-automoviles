@@ -21,7 +21,7 @@
                 <form action="#" th:action="@{/clientes/personas/add}" th:object="${persona}" method="post">
                     <div class="form-group">
                         <label>Cedula:</label>
-                        <input type="number" class="form-control" th:field="*{cedula}" placeholder="Cedula..." required>
+                        <input type="number" step="1" class="form-control" th:field="*{cedula}" placeholder="Cedula..." required>
                     </div>
                     <div class="form-group">
                         <input type="text" th:field="*{nombre}" placeholder="Nombre..." class="form-control">
